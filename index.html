@@ -2,1390 +2,1680 @@
 <html lang="en">
 
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Silsilah — Family Heritage</title>
- <link
-  href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap"
-  rel="stylesheet">
- <style>
-  *,
-  *::before,
-  *::after {
-   box-sizing: border-box;
-   margin: 0;
-   padding: 0
-  }
-
-  :root {
-   --bg: #0d0c08;
-   --surface: #1a1812;
-   --border: #2e2b20;
-   --gold: #c8963e;
-   --gold-lt: #e8b85a;
-   --gold-dim: rgba(200, 150, 62, .15);
-   --cream: #f5eedc;
-   --paper: #faf6ec;
-   --ink: #1e1a0f;
-   --ink-soft: #4a4232;
-   --ink-faint: #8a7d60;
-   --red: #c0392b;
-   --teal: #16a085;
-   --cw: 200px;
-   --ch: 138px;
-   --r: 10px;
-   --sh: 0 4px 24px rgba(0, 0, 0, .18), 0 1px 4px rgba(0, 0, 0, .1);
-   --sh2: 0 8px 40px rgba(0, 0, 0, .28), 0 2px 8px rgba(0, 0, 0, .14);
-  }
-
-  html,
-  body {
-   width: 100%;
-   height: 100%;
-   overflow: hidden;
-   background: var(--bg);
-   color: var(--cream);
-   font-family: 'Lato', sans-serif
-  }
-
-  /* TOPBAR */
-  #tb {
-   position: fixed;
-   top: 0;
-   left: 0;
-   right: 0;
-   z-index: 100;
-   height: 56px;
-   display: flex;
-   align-items: center;
-   gap: 12px;
-   padding: 0 20px;
-   background: rgba(13, 12, 8, .92);
-   backdrop-filter: blur(12px);
-   border-bottom: 1px solid var(--border)
-  }
-
-  #logo {
-   display: flex;
-   align-items: center;
-   gap: 10px;
-   flex-shrink: 0
-  }
-
-  #lt {
-   font-family: 'Playfair Display', serif;
-   font-size: 20px;
-   font-weight: 700;
-   color: var(--gold)
-  }
-
-  #ls {
-   font-size: 10px;
-   color: var(--ink-faint);
-   letter-spacing: .12em;
-   text-transform: uppercase
-  }
-
-  #sw {
-   flex: 1;
-   max-width: 340px;
-   position: relative;
-   margin: 0 auto
-  }
-
-  #s {
-   width: 100%;
-   padding: 8px 14px 8px 36px;
-   background: var(--surface);
-   border: 1px solid var(--border);
-   border-radius: 20px;
-   color: var(--cream);
-   font-family: 'Lato', sans-serif;
-   font-size: 13px;
-   outline: none;
-   transition: border-color .2s
-  }
-
-  #s::placeholder {
-   color: var(--ink-faint)
-  }
-
-  #s:focus {
-   border-color: var(--gold)
-  }
-
-  #si {
-   position: absolute;
-   left: 12px;
-   top: 50%;
-   transform: translateY(-50%);
-   color: var(--ink-faint);
-   font-size: 14px;
-   pointer-events: none
-  }
-
-  #sr {
-   position: absolute;
-   top: calc(100% + 6px);
-   left: 0;
-   right: 0;
-   background: var(--surface);
-   border: 1px solid var(--border);
-   border-radius: 8px;
-   max-height: 220px;
-   overflow-y: auto;
-   display: none;
-   z-index: 200
-  }
-
-  #sr.open {
-   display: block
-  }
-
-  .sri {
-   padding: 10px 14px;
-   cursor: pointer;
-   font-size: 13px;
-   border-bottom: 1px solid var(--border);
-   transition: background .15s
-  }
-
-  .sri:last-child {
-   border-bottom: none
-  }
-
-  .sri:hover {
-   background: var(--gold-dim)
-  }
-
-  .sri strong {
-   color: var(--gold-lt)
-  }
-
-  #tba {
-   display: flex;
-   gap: 8px;
-   flex-shrink: 0
-  }
-
-  .tbb {
-   display: flex;
-   align-items: center;
-   gap: 6px;
-   padding: 7px 14px;
-   border-radius: 20px;
-   font-size: 12px;
-   font-weight: 700;
-   letter-spacing: .05em;
-   cursor: pointer;
-   border: 1px solid;
-   transition: all .2s;
-   text-transform: uppercase;
-   background: transparent;
-   border-color: var(--border);
-   color: var(--ink-faint)
-  }
-
-  .tbb:hover {
-   border-color: var(--gold);
-   color: var(--gold)
-  }
-
-  /* CANVAS */
-  #cw {
-   position: fixed;
-   inset: 56px 0 0 0;
-   overflow: hidden;
-   cursor: grab;
-   background-color: #e8e0cc;
-   background-image: radial-gradient(ellipse at 20% 30%, rgba(200, 150, 62, .06) 0%, transparent 60%), radial-gradient(ellipse at 80% 70%, rgba(100, 80, 30, .08) 0%, transparent 60%)
-  }
-
-  #cw.pan {
-   cursor: grabbing
-  }
-
-  #svg {
-   position: absolute;
-   inset: 0;
-   width: 100%;
-   height: 100%;
-   pointer-events: none;
-   overflow: visible
-  }
-
-  .cp {
-   fill: none;
-   stroke: #8a7040;
-   stroke-width: 2;
-   stroke-opacity: .5
-  }
-
-  .cp.hl {
-   stroke: var(--gold);
-   stroke-opacity: .95;
-   stroke-width: 2.5
-  }
-
-  .sp {
-   fill: none;
-   stroke: var(--teal);
-   stroke-width: 2;
-   stroke-dasharray: 6, 4;
-   stroke-opacity: .7
-  }
-
-  #nw {
-   position: absolute;
-   top: 0;
-   left: 0;
-   width: 0;
-   height: 0;
-   transform-origin: 0 0
-  }
-
-  /* NODES */
-  .no {
-   position: absolute;
-   width: var(--cw);
-   transform: translate(-50%, -50%);
-   user-select: none
-  }
-
-  .ar {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   gap: 6px;
-   margin-bottom: 4px
-  }
-
-  .ab {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   width: 28px;
-   height: 28px;
-   border-radius: 50%;
-   border: 2px dashed var(--gold);
-   background: rgba(200, 150, 62, .12);
-   color: var(--gold);
-   font-size: 16px;
-   font-weight: 700;
-   cursor: pointer;
-   transition: all .2s;
-   opacity: 0;
-   pointer-events: none
-  }
-
-  .ab:hover {
-   background: var(--gold);
-   color: #1a1200;
-   border-style: solid;
-   transform: scale(1.12)
-  }
-
-  .as {
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   width: 26px;
-   height: 26px;
-   border-radius: 50%;
-   border: 2px dashed var(--teal);
-   background: rgba(22, 160, 133, .12);
-   color: var(--teal);
-   font-size: 13px;
-   cursor: pointer;
-   transition: all .2s;
-   opacity: 0;
-   pointer-events: none
-  }
-
-  .as:hover {
-   background: var(--teal);
-   color: #fff;
-   border-style: solid;
-   transform: scale(1.12)
-  }
-
-  .abc {
-   margin-top: 4px
-  }
-
-  .no.sel .ab,
-  .no:hover .ab,
-  .no.sel .as,
-  .no:hover .as {
-   opacity: 1;
-   pointer-events: all
-  }
-
-  .nc {
-   width: var(--cw);
-   height: var(--ch);
-   background: var(--paper);
-   border-radius: var(--r);
-   box-shadow: var(--sh);
-   border: 1.5px solid #ddd5c0;
-   padding: 12px;
-   position: relative;
-   cursor: pointer;
-   transition: box-shadow .2s, border-color .2s;
-   overflow: hidden
-  }
-
-  .nc::before {
-   content: '';
-   position: absolute;
-   top: 0;
-   left: 0;
-   right: 0;
-   height: 3px;
-   background: linear-gradient(90deg, var(--gold), var(--gold-lt));
-   border-radius: var(--r) var(--r) 0 0;
-   opacity: 0;
-   transition: opacity .2s
-  }
-
-  .no.sel .nc,
-  .nc:hover {
-   box-shadow: var(--sh2);
-   border-color: var(--gold)
-  }
-
-  .no.sel .nc::before,
-  .nc:hover::before {
-   opacity: 1
-  }
-
-  .nc.rc {
-   border-color: var(--gold);
-   background: #fffbf0
-  }
-
-  .nc.rc::before {
-   opacity: 1
-  }
-
-  .nc.dm {
-   opacity: .3
-  }
-
-  .nc.sc {
-   border-color: rgba(22, 160, 133, .5)
-  }
-
-  .nc.sc::before {
-   background: linear-gradient(90deg, var(--teal), #1abc9c);
-   opacity: 1
-  }
-
-  .av {
-   position: absolute;
-   top: 12px;
-   right: 12px;
-   width: 34px;
-   height: 34px;
-   border-radius: 50%;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   font-family: 'Playfair Display', serif;
-   font-size: 15px;
-   font-weight: 700;
-   color: #fff
-  }
-
-  .av.m {
-   background: linear-gradient(135deg, #4a7fb5, #2c5f8a)
-  }
-
-  .av.f {
-   background: linear-gradient(135deg, #c0607a, #8a3050)
-  }
-
-  .av.u {
-   background: linear-gradient(135deg, #7a7060, #554c3a)
-  }
-
-  .nb {
-   display: inline-block;
-   padding: 2px 8px;
-   border-radius: 10px;
-   background: var(--gold-dim);
-   color: var(--gold);
-   border: 1px solid rgba(200, 150, 62, .3);
-   font-size: 10px;
-   font-weight: 700;
-   letter-spacing: .06em;
-   text-transform: uppercase;
-   margin-bottom: 6px;
-   max-width: 130px;
-   overflow: hidden;
-   text-overflow: ellipsis;
-   white-space: nowrap
-  }
-
-  .nn {
-   font-family: 'Playfair Display', serif;
-   font-size: 13.5px;
-   font-weight: 600;
-   color: var(--ink);
-   line-height: 1.25;
-   max-width: 130px;
-   overflow: hidden;
-   text-overflow: ellipsis;
-   white-space: nowrap;
-   margin-bottom: 2px
-  }
-
-  .nk {
-   font-size: 11px;
-   color: var(--ink-soft);
-   font-style: italic;
-   margin-bottom: 4px
-  }
-
-  .nd {
-   font-size: 10.5px;
-   color: var(--ink-faint);
-   overflow: hidden;
-   text-overflow: ellipsis;
-   white-space: nowrap;
-   max-width: 130px
-  }
-
-  .na {
-   position: absolute;
-   bottom: 8px;
-   right: 8px;
-   display: flex;
-   gap: 4px;
-   opacity: 0;
-   transition: opacity .2s
-  }
-
-  .nc:hover .na,
-  .no.sel .na {
-   opacity: 1
-  }
-
-  .nab {
-   width: 24px;
-   height: 24px;
-   border-radius: 6px;
-   border: none;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   font-size: 12px;
-   cursor: pointer;
-   transition: all .15s
-  }
-
-  .ned {
-   background: rgba(200, 150, 62, .15);
-   color: var(--gold)
-  }
-
-  .ned:hover {
-   background: var(--gold);
-   color: #1a1200
-  }
-
-  .ndl {
-   background: rgba(192, 57, 43, .12);
-   color: var(--red)
-  }
-
-  .ndl:hover {
-   background: var(--red);
-   color: #fff
-  }
-
-  .dt {
-   position: absolute;
-   left: 50%;
-   width: 8px;
-   height: 8px;
-   border-radius: 50%;
-   background: var(--gold);
-   transform: translateX(-50%);
-   opacity: 0;
-   transition: opacity .2s;
-   pointer-events: none
-  }
-
-  .dtt {
-   top: -4px
-  }
-
-  .dtb {
-   bottom: -4px
-  }
-
-  .nc:hover .dt,
-  .no.sel .dt {
-   opacity: 1
-  }
-
-  /* CONTROLS - bottom LEFT (FIX #1, #3) */
-  #cc {
-   position: fixed;
-   bottom: 24px;
-   left: 24px;
-   z-index: 90;
-   display: flex;
-   flex-direction: column;
-   gap: 8px;
-   align-items: flex-start
-  }
-
-  #rv {
-   display: flex;
-   align-items: center;
-   gap: 8px;
-   padding: 9px 16px;
-   border-radius: 10px;
-   border: 1px solid var(--border);
-   background: var(--surface);
-   color: var(--cream);
-   font-size: 13px;
-   font-weight: 700;
-   cursor: pointer;
-   box-shadow: var(--sh);
-   transition: all .2s;
-   letter-spacing: .02em
-  }
-
-  #rv:hover {
-   border-color: var(--gold);
-   color: var(--gold)
-  }
-
-  #zc {
-   display: flex;
-   gap: 6px
-  }
-
-  .zb {
-   width: 36px;
-   height: 36px;
-   border-radius: 8px;
-   border: 1px solid var(--border);
-   background: var(--surface);
-   color: var(--ink-faint);
-   font-size: 18px;
-   cursor: pointer;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   transition: all .2s;
-   font-weight: 300;
-   box-shadow: var(--sh)
-  }
-
-  .zb:hover {
-   border-color: var(--gold);
-   color: var(--gold)
-  }
-
-  /* MODAL */
-  #mo {
-   position: fixed;
-   inset: 0;
-   z-index: 200;
-   background: rgba(0, 0, 0, .65);
-   backdrop-filter: blur(4px);
-   display: none;
-   align-items: center;
-   justify-content: center
-  }
-
-  #mo.open {
-   display: flex
-  }
-
-  #md {
-   background: var(--surface);
-   border: 1px solid var(--border);
-   border-radius: 16px;
-   width: 460px;
-   max-width: calc(100vw - 32px);
-   box-shadow: var(--sh2);
-   animation: mi .2s ease
-  }
-
-  @keyframes mi {
-   from {
-    opacity: 0;
-    transform: translateY(16px) scale(.97)
-   }
-
-   to {
-    opacity: 1;
-    transform: none
-   }
-  }
-
-  #mh {
-   padding: 20px 24px 16px;
-   border-bottom: 1px solid var(--border);
-   display: flex;
-   align-items: center;
-   justify-content: space-between
-  }
-
-  #mt {
-   font-family: 'Playfair Display', serif;
-   font-size: 20px;
-   color: var(--gold)
-  }
-
-  #mc {
-   background: none;
-   border: none;
-   color: var(--ink-faint);
-   font-size: 22px;
-   cursor: pointer;
-   padding: 0 4px;
-   line-height: 1;
-   transition: color .15s
-  }
-
-  #mc:hover {
-   color: var(--cream)
-  }
-
-  #mb {
-   padding: 20px 24px;
-   display: grid;
-   grid-template-columns: 1fr 1fr;
-   gap: 14px;
-   max-height: 60vh;
-   overflow-y: auto
-  }
-
-  #mb .full {
-   grid-column: 1/-1
-  }
-
-  .fl label {
-   display: block;
-   font-size: 11px;
-   font-weight: 700;
-   letter-spacing: .08em;
-   text-transform: uppercase;
-   color: var(--ink-faint);
-   margin-bottom: 6px
-  }
-
-  .fl input,
-  .fl select,
-  .fl textarea {
-   width: 100%;
-   padding: 9px 12px;
-   background: var(--bg);
-   border: 1px solid var(--border);
-   border-radius: 8px;
-   color: var(--cream);
-   font-family: 'Lato', sans-serif;
-   font-size: 13px;
-   outline: none;
-   transition: border-color .2s
-  }
-
-  .fl input:focus,
-  .fl select:focus,
-  .fl textarea:focus {
-   border-color: var(--gold)
-  }
-
-  .fl select option {
-   background: var(--bg)
-  }
-
-  .fl textarea {
-   resize: vertical;
-   min-height: 60px
-  }
-
-  #mf {
-   padding: 16px 24px;
-   border-top: 1px solid var(--border);
-   display: flex;
-   gap: 10px;
-   justify-content: flex-end
-  }
-
-  .mb {
-   padding: 9px 22px;
-   border-radius: 8px;
-   font-size: 13px;
-   font-weight: 700;
-   cursor: pointer;
-   border: 1px solid;
-   transition: all .2s
-  }
-
-  .mbc {
-   background: transparent;
-   border-color: var(--border);
-   color: var(--ink-faint)
-  }
-
-  .mbc:hover {
-   border-color: var(--cream);
-   color: var(--cream)
-  }
-
-  .mbs {
-   background: var(--gold);
-   border-color: var(--gold);
-   color: #1a1200
-  }
-
-  .mbs:hover {
-   background: var(--gold-lt)
-  }
-
-  /* CONFIRM DIALOG (FIX #2) */
-  #co {
-   position: fixed;
-   inset: 0;
-   z-index: 300;
-   background: rgba(0, 0, 0, .7);
-   backdrop-filter: blur(4px);
-   display: none;
-   align-items: center;
-   justify-content: center
-  }
-
-  #co.open {
-   display: flex
-  }
-
-  #cb {
-   background: var(--surface);
-   border: 1px solid var(--border);
-   border-radius: 14px;
-   width: 380px;
-   max-width: calc(100vw - 32px);
-   box-shadow: var(--sh2);
-   animation: mi .18s ease;
-   padding: 28px 28px 22px;
-   text-align: center
-  }
-
-  #ci {
-   font-size: 36px;
-   margin-bottom: 12px
-  }
-
-  #ctit {
-   font-family: 'Playfair Display', serif;
-   font-size: 18px;
-   color: var(--cream);
-   margin-bottom: 8px
-  }
-
-  #cmsg {
-   font-size: 13px;
-   color: var(--ink-faint);
-   line-height: 1.5;
-   margin-bottom: 24px
-  }
-
-  #cact {
-   display: flex;
-   gap: 10px;
-   justify-content: center
-  }
-
-  #cno {
-   padding: 9px 22px;
-   border-radius: 8px;
-   font-size: 13px;
-   font-weight: 700;
-   cursor: pointer;
-   border: 1px solid var(--border);
-   background: transparent;
-   color: var(--ink-faint);
-   transition: all .2s
-  }
-
-  #cno:hover {
-   border-color: var(--cream);
-   color: var(--cream)
-  }
-
-  #cyes {
-   padding: 9px 22px;
-   border-radius: 8px;
-   font-size: 13px;
-   font-weight: 700;
-   cursor: pointer;
-   border: 1px solid var(--red);
-   background: rgba(192, 57, 43, .15);
-   color: var(--red);
-   transition: all .2s
-  }
-
-  #cyes:hover {
-   background: var(--red);
-   color: #fff
-  }
-
-  /* PANEL (FIX #3: z-index 95 > controls 90) */
-  #pn {
-   position: fixed;
-   top: 56px;
-   right: 0;
-   bottom: 0;
-   width: 300px;
-   z-index: 95;
-   background: var(--surface);
-   border-left: 1px solid var(--border);
-   transform: translateX(100%);
-   transition: transform .28s cubic-bezier(.4, 0, .2, 1);
-   overflow-y: auto;
-   display: flex;
-   flex-direction: column
-  }
-
-  #pn.open {
-   transform: none
-  }
-
-  #ph {
-   padding: 20px;
-   border-bottom: 1px solid var(--border);
-   display: flex;
-   align-items: flex-start;
-   justify-content: space-between;
-   gap: 12px
-  }
-
-  #pa {
-   width: 52px;
-   height: 52px;
-   border-radius: 50%;
-   flex-shrink: 0;
-   display: flex;
-   align-items: center;
-   justify-content: center;
-   font-family: 'Playfair Display', serif;
-   font-size: 22px;
-   font-weight: 700;
-   color: #fff
-  }
-
-  #pa.m {
-   background: linear-gradient(135deg, #4a7fb5, #2c5f8a)
-  }
-
-  #pa.f {
-   background: linear-gradient(135deg, #c0607a, #8a3050)
-  }
-
-  #pa.u {
-   background: linear-gradient(135deg, #7a7060, #554c3a)
-  }
-
-  #ptit {
-   font-family: 'Playfair Display', serif;
-   font-size: 18px;
-   color: var(--cream);
-   margin-bottom: 4px
-  }
-
-  #pnk {
-   font-size: 13px;
-   color: var(--ink-faint);
-   font-style: italic;
-   margin-bottom: 6px
-  }
-
-  #pbg {
-   display: inline-block;
-   padding: 3px 10px;
-   border-radius: 10px;
-   background: var(--gold-dim);
-   color: var(--gold);
-   border: 1px solid rgba(200, 150, 62, .3);
-   font-size: 11px;
-   font-weight: 700;
-   letter-spacing: .06em;
-   text-transform: uppercase
-  }
-
-  #pc {
-   background: none;
-   border: none;
-   color: var(--ink-faint);
-   font-size: 20px;
-   cursor: pointer;
-   padding: 0;
-   flex-shrink: 0;
-   transition: color .15s
-  }
-
-  #pc:hover {
-   color: var(--cream)
-  }
-
-  #pb {
-   padding: 20px;
-   flex: 1
-  }
-
-  .pr {
-   display: flex;
-   gap: 12px;
-   margin-bottom: 16px;
-   align-items: flex-start
-  }
-
-  .pri {
-   font-size: 16px;
-   margin-top: 1px;
-   flex-shrink: 0
-  }
-
-  .prl {
-   font-size: 10px;
-   font-weight: 700;
-   letter-spacing: .08em;
-   text-transform: uppercase;
-   color: var(--ink-faint);
-   margin-bottom: 2px
-  }
-
-  .prv {
-   font-size: 13px;
-   color: var(--cream);
-   word-break: break-word
-  }
-
-  .pre {
-   color: var(--ink-faint);
-   font-style: italic
-  }
-
-  #pac {
-   padding: 16px 20px;
-   border-top: 1px solid var(--border);
-   display: flex;
-   gap: 8px
-  }
-
-  .pab {
-   flex: 1;
-   padding: 9px;
-   border-radius: 8px;
-   font-size: 11px;
-   font-weight: 700;
-   cursor: pointer;
-   border: 1px solid;
-   text-align: center;
-   transition: all .2s;
-   letter-spacing: .04em
-  }
-
-  .pae {
-   background: var(--gold-dim);
-   border-color: rgba(200, 150, 62, .3);
-   color: var(--gold)
-  }
-
-  .pae:hover {
-   background: var(--gold);
-   color: #1a1200;
-   border-color: var(--gold)
-  }
-
-  .pad {
-   background: rgba(192, 57, 43, .1);
-   border-color: rgba(192, 57, 43, .25);
-   color: var(--red)
-  }
-
-  .pad:hover {
-   background: var(--red);
-   color: #fff;
-   border-color: var(--red)
-  }
-
-  /* TOAST */
-  #toast {
-   position: fixed;
-   bottom: 80px;
-   left: 50%;
-   z-index: 400;
-   transform: translateX(-50%) translateY(20px);
-   background: var(--surface);
-   border: 1px solid var(--border);
-   border-radius: 8px;
-   padding: 10px 20px;
-   font-size: 13px;
-   color: var(--cream);
-   opacity: 0;
-   transition: all .3s;
-   pointer-events: none;
-   white-space: nowrap
-  }
-
-  #toast.show {
-   opacity: 1;
-   transform: translateX(-50%) translateY(0)
-  }
-
-  /* EMPTY HINT */
-  #eh {
-   position: fixed;
-   bottom: 80px;
-   left: 50%;
-   transform: translateX(-50%);
-   z-index: 50;
-   text-align: center;
-   pointer-events: none;
-   animation: fl 3s ease-in-out infinite
-  }
-
-  @keyframes fl {
-
-   0%,
-   100% {
-    transform: translateX(-50%) translateY(0)
-   }
-
-   50% {
-    transform: translateX(-50%) translateY(-8px)
-   }
-  }
-
-  #eh p {
-   font-size: 13px;
-   color: var(--ink-soft)
-  }
-
-  /* LEGEND */
-  #leg {
-   position: fixed;
-   bottom: 24px;
-   right: 24px;
-   z-index: 89;
-   background: rgba(26, 24, 18, .92);
-   border: 1px solid var(--border);
-   border-radius: 10px;
-   padding: 10px 14px;
-   font-size: 11px;
-   color: var(--ink-faint);
-   line-height: 2
-  }
-
-  .lr {
-   display: flex;
-   align-items: center;
-   gap: 8px
-  }
-
-  ::-webkit-scrollbar {
-   width: 6px
-  }
-
-  ::-webkit-scrollbar-track {
-   background: transparent
-  }
-
-  ::-webkit-scrollbar-thumb {
-   background: var(--border);
-   border-radius: 3px
-  }
- </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#0d0c08">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Silsilah">
+  <link rel="manifest" href="silsilah.webmanifest">
+  <title>Silsilah — Family Heritage</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --bg: #0d0c08;
+      --surface: #1a1812;
+      --border: #2e2b20;
+      --gold: #c8963e;
+      --gold-lt: #e8b85a;
+      --gold-dim: rgba(200, 150, 62, .15);
+      --cream: #f5eedc;
+      --paper: #faf6ec;
+      --ink: #1e1a0f;
+      --ink-soft: #4a4232;
+      --ink-faint: #8a7d60;
+      --red: #c0392b;
+      --teal: #16a085;
+      --cw: 200px;
+      --ch: 138px;
+      --r: 10px;
+      --sh: 0 4px 24px rgba(0, 0, 0, .18), 0 1px 4px rgba(0, 0, 0, .1);
+      --sh2: 0 8px 40px rgba(0, 0, 0, .28), 0 2px 8px rgba(0, 0, 0, .14);
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--cream);
+      font-family: 'Lato', sans-serif
+    }
+
+    /* TOPBAR */
+    #tb {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 20px;
+      background: rgba(13, 12, 8, .92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border)
+    }
+
+    #logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0
+    }
+
+    #lt {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--gold)
+    }
+
+    #ls {
+      font-size: 10px;
+      color: var(--ink-faint);
+      letter-spacing: .12em;
+      text-transform: uppercase
+    }
+
+    #sw {
+      flex: 1;
+      max-width: 340px;
+      position: relative;
+      margin: 0 auto
+    }
+
+    #s {
+      width: 100%;
+      padding: 8px 14px 8px 36px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--cream);
+      font-family: 'Lato', sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: border-color .2s
+    }
+
+    #s::placeholder {
+      color: var(--ink-faint)
+    }
+
+    #s:focus {
+      border-color: var(--gold)
+    }
+
+    #si {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--ink-faint);
+      font-size: 14px;
+      pointer-events: none
+    }
+
+    #sr {
+      position: absolute;
+      top: calc(100% + 6px);
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      max-height: 220px;
+      overflow-y: auto;
+      display: none;
+      z-index: 200
+    }
+
+    #sr.open {
+      display: block
+    }
+
+    .sri {
+      padding: 10px 14px;
+      cursor: pointer;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      transition: background .15s
+    }
+
+    .sri:last-child {
+      border-bottom: none
+    }
+
+    .sri:hover {
+      background: var(--gold-dim)
+    }
+
+    .sri strong {
+      color: var(--gold-lt)
+    }
+
+    #tba {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0
+    }
+
+    .tbb {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      cursor: pointer;
+      border: 1px solid;
+      transition: all .2s;
+      text-transform: uppercase;
+      background: transparent;
+      border-color: var(--border);
+      color: var(--ink-faint)
+    }
+
+    .tbb:hover {
+      border-color: var(--gold);
+      color: var(--gold)
+    }
+
+    /* CANVAS */
+    #cw {
+      position: fixed;
+      inset: 56px 0 0 0;
+      overflow: hidden;
+      cursor: grab;
+      background-color: #e8e0cc;
+      background-image: radial-gradient(ellipse at 20% 30%, rgba(200, 150, 62, .06) 0%, transparent 60%), radial-gradient(ellipse at 80% 70%, rgba(100, 80, 30, .08) 0%, transparent 60%)
+    }
+
+    #cw.pan {
+      cursor: grabbing
+    }
+
+    #svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: visible
+    }
+
+    .cp {
+      fill: none;
+      stroke: #8a7040;
+      stroke-width: 2;
+      stroke-opacity: .6
+    }
+
+    .cp.hl {
+      stroke: var(--gold);
+      stroke-opacity: .95;
+      stroke-width: 2.5
+    }
+
+    .sp {
+      fill: none;
+      stroke: var(--teal);
+      stroke-width: 2;
+      stroke-dasharray: 6, 4;
+      stroke-opacity: .75
+    }
+
+    .sp.hl {
+      stroke: var(--teal);
+      stroke-opacity: 1;
+      stroke-width: 2.5
+    }
+
+    .sb {
+      fill: none;
+      stroke: #8a60c0;
+      stroke-width: 1.5;
+      stroke-dasharray: 3, 5;
+      stroke-opacity: .65
+    }
+
+    .sb.hl {
+      stroke: #a87de0;
+      stroke-opacity: 1;
+      stroke-width: 2
+    }
+
+    #nw {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 0;
+      height: 0;
+      transform-origin: 0 0
+    }
+
+    /* NODES */
+    .no {
+      position: absolute;
+      width: var(--cw);
+      transform: translate(-50%, -50%);
+      user-select: none
+    }
+
+    .ar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 4px
+    }
+
+    .ab {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px dashed var(--gold);
+      background: rgba(200, 150, 62, .12);
+      color: var(--gold);
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      opacity: 0;
+      pointer-events: none
+    }
+
+    .ab:hover {
+      background: var(--gold);
+      color: #1a1200;
+      border-style: solid;
+      transform: scale(1.12)
+    }
+
+    .asib {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px dashed #8a60c0;
+      background: rgba(138, 96, 192, .12);
+      color: #8a60c0;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all .2s;
+      opacity: 0;
+      pointer-events: none
+    }
+
+    .asib:hover {
+      background: #8a60c0;
+      color: #fff;
+      border-style: solid;
+      transform: scale(1.12)
+    }
+
+    .as {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px dashed var(--teal);
+      background: rgba(22, 160, 133, .12);
+      color: var(--teal);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all .2s;
+      opacity: 0;
+      pointer-events: none
+    }
+
+    .as:hover {
+      background: var(--teal);
+      color: #fff;
+      border-style: solid;
+      transform: scale(1.12)
+    }
+
+    .abc {
+      margin-top: 4px
+    }
+
+    .no.sel .ab,
+    .no:hover .ab,
+    .no.sel .as,
+    .no:hover .as,
+    .no.sel .asib,
+    .no:hover .asib {
+      opacity: 1;
+      pointer-events: all
+    }
+
+    .nc {
+      width: var(--cw);
+      height: var(--ch);
+      background: var(--paper);
+      border-radius: var(--r);
+      box-shadow: var(--sh);
+      border: 1.5px solid #ddd5c0;
+      padding: 12px;
+      position: relative;
+      cursor: pointer;
+      transition: box-shadow .2s, border-color .2s;
+      overflow: hidden
+    }
+
+    .nc::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--gold-lt));
+      border-radius: var(--r) var(--r) 0 0;
+      opacity: 0;
+      transition: opacity .2s
+    }
+
+    .no.sel .nc,
+    .nc:hover {
+      box-shadow: var(--sh2);
+      border-color: var(--gold)
+    }
+
+    .no.sel .nc::before,
+    .nc:hover::before {
+      opacity: 1
+    }
+
+    .nc.rc {
+      border-color: var(--gold);
+      background: #fffbf0
+    }
+
+    .nc.rc::before {
+      opacity: 1
+    }
+
+    .nc.dm {
+      opacity: .3
+    }
+
+    .nc.sc {
+      border-color: rgba(22, 160, 133, .5)
+    }
+
+    .nc.sc::before {
+      background: linear-gradient(90deg, var(--teal), #1abc9c);
+      opacity: 1
+    }
+
+    .av {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: #fff
+    }
+
+    .av.m {
+      background: linear-gradient(135deg, #4a7fb5, #2c5f8a)
+    }
+
+    .av.f {
+      background: linear-gradient(135deg, #c0607a, #8a3050)
+    }
+
+    .av.u {
+      background: linear-gradient(135deg, #7a7060, #554c3a)
+    }
+
+    .nb {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      background: var(--gold-dim);
+      color: var(--gold);
+      border: 1px solid rgba(200, 150, 62, .3);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      max-width: 130px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .nn {
+      font-family: 'Playfair Display', serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--ink);
+      line-height: 1.25;
+      max-width: 130px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-bottom: 2px
+    }
+
+    .nk {
+      font-size: 11px;
+      color: var(--ink-soft);
+      font-style: italic;
+      margin-bottom: 4px
+    }
+
+    .nd {
+      font-size: 10.5px;
+      color: var(--ink-faint);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 130px
+    }
+
+    .na {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      display: flex;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity .2s
+    }
+
+    .nc:hover .na,
+    .no.sel .na {
+      opacity: 1
+    }
+
+    .nab {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all .15s
+    }
+
+    .ned {
+      background: rgba(200, 150, 62, .15);
+      color: var(--gold)
+    }
+
+    .ned:hover {
+      background: var(--gold);
+      color: #1a1200
+    }
+
+    .ndl {
+      background: rgba(192, 57, 43, .12);
+      color: var(--red)
+    }
+
+    .ndl:hover {
+      background: var(--red);
+      color: #fff
+    }
+
+    .dt {
+      position: absolute;
+      left: 50%;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold);
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity .2s;
+      pointer-events: none
+    }
+
+    .dtt {
+      top: -4px
+    }
+
+    .dtb {
+      bottom: -4px
+    }
+
+    .nc:hover .dt,
+    .no.sel .dt {
+      opacity: 1
+    }
+
+    /* CONTROLS - bottom LEFT (FIX #1, #3) */
+    #cc {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start
+    }
+
+    #rv {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--cream);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--sh);
+      transition: all .2s;
+      letter-spacing: .02em
+    }
+
+    #rv:hover {
+      border-color: var(--gold);
+      color: var(--gold)
+    }
+
+    #zc {
+      display: flex;
+      gap: 6px
+    }
+
+    .zb {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--ink-faint);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all .2s;
+      font-weight: 300;
+      box-shadow: var(--sh)
+    }
+
+    .zb:hover {
+      border-color: var(--gold);
+      color: var(--gold)
+    }
+
+    /* MODAL */
+    #mo {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: rgba(0, 0, 0, .65);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center
+    }
+
+    #mo.open {
+      display: flex
+    }
+
+    #md {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 460px;
+      max-width: calc(100vw - 32px);
+      box-shadow: var(--sh2);
+      animation: mi .2s ease
+    }
+
+    @keyframes mi {
+      from {
+        opacity: 0;
+        transform: translateY(16px) scale(.97)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    #mh {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    #mt {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      color: var(--gold)
+    }
+
+    #mc {
+      background: none;
+      border: none;
+      color: var(--ink-faint);
+      font-size: 22px;
+      cursor: pointer;
+      padding: 0 4px;
+      line-height: 1;
+      transition: color .15s
+    }
+
+    #mc:hover {
+      color: var(--cream)
+    }
+
+    #mb {
+      padding: 20px 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      max-height: 60vh;
+      overflow-y: auto
+    }
+
+    #mb .full {
+      grid-column: 1/-1
+    }
+
+    .fl label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 6px
+    }
+
+    .fl input,
+    .fl select,
+    .fl textarea {
+      width: 100%;
+      padding: 9px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--cream);
+      font-family: 'Lato', sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: border-color .2s
+    }
+
+    .fl input:focus,
+    .fl select:focus,
+    .fl textarea:focus {
+      border-color: var(--gold)
+    }
+
+    .fl select option {
+      background: var(--bg)
+    }
+
+    .fl textarea {
+      resize: vertical;
+      min-height: 60px
+    }
+
+    #mf {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end
+    }
+
+    .mb {
+      padding: 9px 22px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid;
+      transition: all .2s
+    }
+
+    .mbc {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--ink-faint)
+    }
+
+    .mbc:hover {
+      border-color: var(--cream);
+      color: var(--cream)
+    }
+
+    .mbs {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #1a1200
+    }
+
+    .mbs:hover {
+      background: var(--gold-lt)
+    }
+
+    /* CONFIRM DIALOG (FIX #2) */
+    #co {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(0, 0, 0, .7);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center
+    }
+
+    #co.open {
+      display: flex
+    }
+
+    #cb {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: 380px;
+      max-width: calc(100vw - 32px);
+      box-shadow: var(--sh2);
+      animation: mi .18s ease;
+      padding: 28px 28px 22px;
+      text-align: center
+    }
+
+    #ci {
+      font-size: 36px;
+      margin-bottom: 12px
+    }
+
+    #ctit {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: var(--cream);
+      margin-bottom: 8px
+    }
+
+    #cmsg {
+      font-size: 13px;
+      color: var(--ink-faint);
+      line-height: 1.5;
+      margin-bottom: 24px
+    }
+
+    #cact {
+      display: flex;
+      gap: 10px;
+      justify-content: center
+    }
+
+    #cno {
+      padding: 9px 22px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--ink-faint);
+      transition: all .2s
+    }
+
+    #cno:hover {
+      border-color: var(--cream);
+      color: var(--cream)
+    }
+
+    #cyes {
+      padding: 9px 22px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid var(--red);
+      background: rgba(192, 57, 43, .15);
+      color: var(--red);
+      transition: all .2s
+    }
+
+    #cyes:hover {
+      background: var(--red);
+      color: #fff
+    }
+
+    /* PANEL (FIX #3: z-index 95 > controls 90) */
+    #pn {
+      position: fixed;
+      top: 56px;
+      right: 0;
+      bottom: 0;
+      width: 300px;
+      z-index: 95;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      transform: translateX(100%);
+      transition: transform .28s cubic-bezier(.4, 0, .2, 1);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column
+    }
+
+    #pn.open {
+      transform: none
+    }
+
+    #ph {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px
+    }
+
+    #pa {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff
+    }
+
+    #pa.m {
+      background: linear-gradient(135deg, #4a7fb5, #2c5f8a)
+    }
+
+    #pa.f {
+      background: linear-gradient(135deg, #c0607a, #8a3050)
+    }
+
+    #pa.u {
+      background: linear-gradient(135deg, #7a7060, #554c3a)
+    }
+
+    #ptit {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: var(--cream);
+      margin-bottom: 4px
+    }
+
+    #pnk {
+      font-size: 13px;
+      color: var(--ink-faint);
+      font-style: italic;
+      margin-bottom: 6px
+    }
+
+    #pbg {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 10px;
+      background: var(--gold-dim);
+      color: var(--gold);
+      border: 1px solid rgba(200, 150, 62, .3);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase
+    }
+
+    #pc {
+      background: none;
+      border: none;
+      color: var(--ink-faint);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 0;
+      flex-shrink: 0;
+      transition: color .15s
+    }
+
+    #pc:hover {
+      color: var(--cream)
+    }
+
+    #pb {
+      padding: 20px;
+      flex: 1
+    }
+
+    .pr {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      align-items: flex-start
+    }
+
+    .pri {
+      font-size: 16px;
+      margin-top: 1px;
+      flex-shrink: 0
+    }
+
+    .prl {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      margin-bottom: 2px
+    }
+
+    .prv {
+      font-size: 13px;
+      color: var(--cream);
+      word-break: break-word
+    }
+
+    .pre {
+      color: var(--ink-faint);
+      font-style: italic
+    }
+
+    #pac {
+      padding: 16px 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 8px
+    }
+
+    .pab {
+      flex: 1;
+      padding: 9px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid;
+      text-align: center;
+      transition: all .2s;
+      letter-spacing: .04em
+    }
+
+    .pae {
+      background: var(--gold-dim);
+      border-color: rgba(200, 150, 62, .3);
+      color: var(--gold)
+    }
+
+    .pae:hover {
+      background: var(--gold);
+      color: #1a1200;
+      border-color: var(--gold)
+    }
+
+    .pad {
+      background: rgba(192, 57, 43, .1);
+      border-color: rgba(192, 57, 43, .25);
+      color: var(--red)
+    }
+
+    .pad:hover {
+      background: var(--red);
+      color: #fff;
+      border-color: var(--red)
+    }
+
+    /* TOAST */
+    #toast {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      z-index: 400;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-size: 13px;
+      color: var(--cream);
+      opacity: 0;
+      transition: all .3s;
+      pointer-events: none;
+      white-space: nowrap
+    }
+
+    #toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0)
+    }
+
+    /* EMPTY HINT */
+    #eh {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      text-align: center;
+      pointer-events: none;
+      animation: fl 3s ease-in-out infinite
+    }
+
+    @keyframes fl {
+
+      0%,
+      100% {
+        transform: translateX(-50%) translateY(0)
+      }
+
+      50% {
+        transform: translateX(-50%) translateY(-8px)
+      }
+    }
+
+    #eh p {
+      font-size: 13px;
+      color: var(--ink-soft)
+    }
+
+    /* LINK EXISTING PICKER */
+    #lx {
+      position: fixed;
+      inset: 0;
+      z-index: 250;
+      background: rgba(0, 0, 0, .7);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center
+    }
+
+    #lx.open {
+      display: flex
+    }
+
+    #lxb {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 420px;
+      max-width: calc(100vw - 32px);
+      box-shadow: var(--sh2);
+      animation: mi .2s ease;
+      overflow: hidden
+    }
+
+    #lxh {
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between
+    }
+
+    #lxt {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      color: var(--gold)
+    }
+
+    #lxc {
+      background: none;
+      border: none;
+      color: var(--ink-faint);
+      font-size: 22px;
+      cursor: pointer;
+      transition: color .15s
+    }
+
+    #lxc:hover {
+      color: var(--cream)
+    }
+
+    #lxs {
+      padding: 12px 22px;
+      border-bottom: 1px solid var(--border)
+    }
+
+    #lxsi {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--cream);
+      font-family: 'Lato', sans-serif;
+      font-size: 13px;
+      outline: none;
+      transition: border-color .2s
+    }
+
+    #lxsi:focus {
+      border-color: var(--gold)
+    }
+
+    #lxl {
+      max-height: 280px;
+      overflow-y: auto
+    }
+
+    .lxi {
+      padding: 10px 22px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+      transition: background .15s;
+      display: flex;
+      align-items: center;
+      gap: 12px
+    }
+
+    .lxi:last-child {
+      border-bottom: none
+    }
+
+    .lxi:hover {
+      background: var(--gold-dim)
+    }
+
+    .lxiav {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      flex-shrink: 0
+    }
+
+    .lxin {
+      font-size: 13px;
+      color: var(--cream)
+    }
+
+    .lxis {
+      font-size: 11px;
+      color: var(--ink-faint)
+    }
+
+    #lxne {
+      padding: 14px 22px;
+      border-top: 1px solid var(--border);
+      text-align: center
+    }
+
+    .lxneb {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 8px;
+      border: 1px solid var(--gold);
+      background: var(--gold-dim);
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      letter-spacing: .04em
+    }
+
+    .lxneb:hover {
+      background: var(--gold);
+      color: #1a1200
+    }
+
+    /* LEGEND purple for siblings */
+    .lr-sib {
+      color: #8a60c0
+    }
+
+    #leg {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 89;
+      background: rgba(26, 24, 18, .92);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 11px;
+      color: var(--ink-faint);
+      line-height: 2
+    }
+
+    .lr {
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 3px
+    }
+  </style>
 </head>
 
 <body>
- <header id="tb">
-  <div id="logo"><span style="font-size:22px">&#127795;</span>
-   <div>
-    <div id="lt">Silsilah</div>
-    <div id="ls">Family Heritage</div>
-   </div>
-  </div>
-  <div id="sw"><span id="si">&#128269;</span><input id="s" type="text" placeholder="Search by name or nickname..."
-    autocomplete="off">
-   <div id="sr"></div>
-  </div>
-  <div id="tba">
-   <label class="tbb" style="cursor:pointer">&#11014; Import<input type="file" id="imp" accept=".json"
-     style="display:none"></label>
-   <button class="tbb" id="exp">&#11015; Export</button>
-  </div>
- </header>
-
- <div id="cw">
-  <svg id="svg">
-   <g id="sg"></g>
-  </svg>
-  <div id="nw"></div>
-  <div id="eh" style="display:none">
-   <div style="font-size:28px;margin-bottom:4px">&#128070;</div>
-   <p>Click the node to select it, then<br>use <strong style="color:var(--gold)">+</strong> buttons to add family
-    members</p>
-  </div>
- </div>
-
- <div id="cc">
-  <button id="rv">&#8984; Centre View</button>
-  <div id="zc"><button class="zb" id="zi">+</button><button class="zb" id="zo">&minus;</button></div>
- </div>
-
- <div id="leg">
-  <div class="lr"><span
-    style="display:inline-block;width:20px;height:2px;background:var(--gold);border-radius:1px"></span> Parent / Child
-  </div>
-  <div class="lr"><span style="display:inline-block;width:20px;border-top:2px dashed var(--teal)"></span> Spouse /
-   Partner</div>
- </div>
-
- <!-- FORM MODAL -->
- <div id="mo">
-  <div id="md">
-   <div id="mh"><span id="mt">Add Person</span><button id="mc">&times;</button></div>
-   <div id="mb">
-    <div class="fl full"><label>Full Name *</label><input id="fn" type="text" placeholder="e.g. Ahmad bin Abdullah">
+  <header id="tb">
+    <div id="logo"><span style="font-size:22px">&#127795;</span>
+      <div>
+        <div id="lt">Silsilah</div>
+        <div id="ls">Family Heritage</div>
+      </div>
     </div>
-    <div class="fl"><label>Nickname (Panggilan)</label><input id="fk" type="text" placeholder="e.g. Pak Long"></div>
-    <div class="fl"><label>Gender</label><select id="fg">
-      <option value="unknown">-- Select --</option>
-      <option value="male">Male (Lelaki)</option>
-      <option value="female">Female (Perempuan)</option>
-     </select></div>
-    <div class="fl full"><label>Relationship Label</label>
-     <select id="fl">
-      <option value="">-- Select --</option>
-      <optgroup label="Direct">
-       <option>Ayah / Bapa</option>
-       <option>Ibu / Mama</option>
-       <option>Abang</option>
-       <option>Kakak</option>
-       <option>Adik</option>
-       <option>Anak</option>
-       <option>Menantu</option>
-      </optgroup>
-      <optgroup label="Grandparents">
-       <option>Tok Ayah (Datuk)</option>
-       <option>Tok (Nenek)</option>
-       <option>Tok Ayah sebelah Ibu</option>
-       <option>Tok sebelah Ibu</option>
-      </optgroup>
-      <optgroup label="Extended - Paternal">
-       <option>Pak Long</option>
-       <option>Pak Ngah</option>
-       <option>Pak Teh</option>
-       <option>Pak Cik</option>
-       <option>Pak Su</option>
-      </optgroup>
-      <optgroup label="Extended - Maternal">
-       <option>Mak Long</option>
-       <option>Mak Ngah</option>
-       <option>Mak Teh</option>
-       <option>Mak Cik</option>
-       <option>Mak Su</option>
-      </optgroup>
-      <optgroup label="Cousins &amp; Descendants">
-       <option>Sepupu (1st)</option>
-       <option>Sepupu (2nd)</option>
-       <option>Sepupu Jauh</option>
-       <option>Cucu</option>
-       <option>Cicit</option>
-      </optgroup>
-      <option value="__c">Edit Custom Label...</option>
-     </select>
-     <input id="flc" type="text" placeholder="Type custom label..." style="margin-top:6px;display:none">
+    <div id="sw"><span id="si">&#128269;</span><input id="s" type="text" placeholder="Search by name or nickname..."
+        autocomplete="off">
+      <div id="sr"></div>
     </div>
-    <div class="fl"><label>Phone Number</label><input id="fp" type="tel" placeholder="+60123456789"></div>
-    <div class="fl full"><label>Address</label><textarea id="fa"
-      placeholder="e.g. No. 12, Jalan Mawar, Selangor"></textarea></div>
-   </div>
-   <div id="mf"><button class="mb mbc" id="mca">Cancel</button><button class="mb mbs" id="msv">Save</button></div>
+    <div id="tba">
+      <label class="tbb" style="cursor:pointer">&#11014; Import<input type="file" id="imp" accept=".json"
+          style="display:none"></label>
+      <button class="tbb" id="exp">&#11015; Export</button>
+    </div>
+  </header>
+
+  <div id="cw">
+    <svg id="svg">
+      <g id="sg"></g>
+    </svg>
+    <div id="nw"></div>
+    <div id="eh" style="display:none">
+      <div style="font-size:28px;margin-bottom:4px">&#128070;</div>
+      <p>Click the node to select it, then<br>use <strong style="color:var(--gold)">+</strong> buttons to add family
+        members</p>
+    </div>
   </div>
- </div>
 
- <!-- CONFIRM DIALOG FIX #2 -->
- <div id="co">
-  <div id="cb">
-   <div id="ci">&#128465;</div>
-   <div id="ctit">Remove this person?</div>
-   <div id="cmsg">This will remove them and their connections from the tree.</div>
-   <div id="cact"><button id="cno">Cancel</button><button id="cyes">Yes, Remove</button></div>
+  <div id="cc">
+    <button id="rv">&#8984; Centre View</button>
+    <div id="zc"><button class="zb" id="zi">+</button><button class="zb" id="zo">&minus;</button></div>
   </div>
- </div>
 
- <!-- SIDE PANEL -->
- <div id="pn">
-  <div id="ph">
-   <div id="pa" class="u">?</div>
-   <div style="flex:1;min-width:0">
-    <div id="ptit">--</div>
-    <div id="pnk"></div>
-    <div id="pbg"></div>
-   </div>
-   <button id="pc">&times;</button>
+  <div id="leg">
+    <div class="lr"><span
+        style="display:inline-block;width:20px;height:2px;background:var(--gold);border-radius:1px"></span> Parent /
+      Child</div>
+    <div class="lr"><span style="display:inline-block;width:20px;border-top:2px dashed var(--teal)"></span> Spouse /
+      Partner</div>
+    <div class="lr"><span style="display:inline-block;width:20px;border-top:2px dotted #8a60c0"></span> Siblings</div>
   </div>
-  <div id="pb">
-   <div class="pr"><span class="pri">&#128222;</span>
-    <div>
-     <div class="prl">Phone</div>
-     <div id="pph" class="prv pre">--</div>
+
+  <!-- FORM MODAL -->
+  <div id="mo">
+    <div id="md">
+      <div id="mh"><span id="mt">Add Person</span><button id="mc">&times;</button></div>
+      <div id="mb">
+        <div class="fl full"><label>Full Name *</label><input id="fn" type="text" placeholder="e.g. Ahmad bin Abdullah">
+        </div>
+        <div class="fl"><label>Nickname (Panggilan)</label><input id="fk" type="text" placeholder="e.g. Pak Long"></div>
+        <div class="fl"><label>Gender</label><select id="fg">
+            <option value="unknown">-- Select --</option>
+            <option value="male">Male (Lelaki)</option>
+            <option value="female">Female (Perempuan)</option>
+          </select></div>
+        <div class="fl full"><label>Relationship Label</label>
+          <select id="fl">
+            <option value="">-- Select --</option>
+            <optgroup label="Direct">
+              <option>Ayah / Bapa</option>
+              <option>Ibu / Mama</option>
+              <option>Abang</option>
+              <option>Kakak</option>
+              <option>Adik</option>
+              <option>Anak</option>
+              <option>Menantu</option>
+            </optgroup>
+            <optgroup label="Grandparents">
+              <option>Tok Ayah (Datuk)</option>
+              <option>Tok (Nenek)</option>
+              <option>Tok Ayah sebelah Ibu</option>
+              <option>Tok sebelah Ibu</option>
+            </optgroup>
+            <optgroup label="Extended - Paternal">
+              <option>Pak Long</option>
+              <option>Pak Ngah</option>
+              <option>Pak Teh</option>
+              <option>Pak Cik</option>
+              <option>Pak Su</option>
+            </optgroup>
+            <optgroup label="Extended - Maternal">
+              <option>Mak Long</option>
+              <option>Mak Ngah</option>
+              <option>Mak Teh</option>
+              <option>Mak Cik</option>
+              <option>Mak Su</option>
+            </optgroup>
+            <optgroup label="Cousins &amp; Descendants">
+              <option>Sepupu (1st)</option>
+              <option>Sepupu (2nd)</option>
+              <option>Sepupu Jauh</option>
+              <option>Cucu</option>
+              <option>Cicit</option>
+            </optgroup>
+            <option value="__c">Edit Custom Label...</option>
+          </select>
+          <input id="flc" type="text" placeholder="Type custom label..." style="margin-top:6px;display:none">
+        </div>
+        <div class="fl"><label>Phone Number</label><input id="fp" type="tel" placeholder="+60123456789"></div>
+        <div class="fl full"><label>Address</label><textarea id="fa"
+            placeholder="e.g. No. 12, Jalan Mawar, Selangor"></textarea></div>
+      </div>
+      <div id="mf"><button class="mb mbc" id="mca">Cancel</button><button class="mb mbs" id="msv">Save</button></div>
     </div>
-   </div>
-   <div class="pr"><span class="pri">&#128205;</span>
-    <div>
-     <div class="prl">Address</div>
-     <div id="pad2" class="prv pre">--</div>
-    </div>
-   </div>
-   <div class="pr"><span class="pri">&#128141;</span>
-    <div>
-     <div class="prl">Spouse / Partner</div>
-     <div id="psp" class="prv pre">--</div>
-    </div>
-   </div>
-   <div class="pr"><span class="pri">&#128106;</span>
-    <div>
-     <div class="prl">Parents</div>
-     <div id="ppar" class="prv pre">--</div>
-    </div>
-   </div>
-   <div class="pr"><span class="pri">&#128118;</span>
-    <div>
-     <div class="prl">Children</div>
-     <div id="pch" class="prv pre">--</div>
-    </div>
-   </div>
   </div>
-  <div id="pac"><button class="pab pae" id="ped">Edit</button><button class="pab pad" id="pdl">Delete</button></div>
- </div>
 
- <div id="toast"></div>
+  <!-- CONFIRM DIALOG FIX #2 -->
+  <div id="co">
+    <div id="cb">
+      <div id="ci">&#128465;</div>
+      <div id="ctit">Remove this person?</div>
+      <div id="cmsg">This will remove them and their connections from the tree.</div>
+      <div id="cact"><button id="cno">Cancel</button><button id="cyes">Yes, Remove</button></div>
+    </div>
+  </div>
 
- <script>
-  const S = { nodes: {}, rootId: null, selId: null, tf: { x: 0, y: 0, sc: 1 }, modal: null, drag: null, pan: false, po: null, confirmCb: null }
-  const uid = () => crypto.randomUUID()
-  const $ = id => document.getElementById(id)
-  const CW = 200, CH = 138, GY = 220, GX = 240
+  <!-- SIDE PANEL -->
+  <div id="pn">
+    <div id="ph">
+      <div id="pa" class="u">?</div>
+      <div style="flex:1;min-width:0">
+        <div id="ptit">--</div>
+        <div id="pnk"></div>
+        <div id="pbg"></div>
+      </div>
+      <button id="pc">&times;</button>
+    </div>
+    <div id="pb">
+      <div class="pr"><span class="pri">&#128222;</span>
+        <div>
+          <div class="prl">Phone</div>
+          <div id="pph" class="prv pre">--</div>
+        </div>
+      </div>
+      <div class="pr"><span class="pri">&#128205;</span>
+        <div>
+          <div class="prl">Address</div>
+          <div id="pad2" class="prv pre">--</div>
+        </div>
+      </div>
+      <div class="pr"><span class="pri">&#128141;</span>
+        <div>
+          <div class="prl">Spouse / Partner</div>
+          <div id="psp" class="prv pre">--</div>
+        </div>
+      </div>
+      <div class="pr"><span class="pri">&#128106;</span>
+        <div>
+          <div class="prl">Parents</div>
+          <div id="ppar" class="prv pre">--</div>
+        </div>
+      </div>
+      <div class="pr"><span class="pri">&#128118;</span>
+        <div>
+          <div class="prl">Children</div>
+          <div id="pch" class="prv pre">--</div>
+        </div>
+      </div>
+    </div>
+    <div id="pac"><button class="pab pae" id="ped">Edit</button><button class="pab pad" id="pdl">Delete</button></div>
+  </div>
 
-  function ini(n) { if (!n) return '?'; return n.trim().split(/\s+/).slice(0, 2).map(w => w[0].toUpperCase()).join('') }
+  <!-- LINK EXISTING PICKER -->
+  <div id="lx">
+    <div id="lxb">
+      <div id="lxh"><span id="lxt">Link Existing Person</span><button id="lxc">&times;</button></div>
+      <div id="lxs"><input id="lxsi" type="text" placeholder="Search by name..." autocomplete="off"></div>
+      <div id="lxl"></div>
+      <div id="lxne"><button class="lxneb" id="lxnew">+ Create New Person Instead</button></div>
+    </div>
+  </div>
 
-  // CONFIRM FIX #2
-  function confirm2(title, msg, cb) { $('ctit').textContent = title; $('cmsg').textContent = msg; S.confirmCb = cb; $('co').classList.add('open') }
-  $('cno').addEventListener('click', () => { $('co').classList.remove('open'); S.confirmCb = null })
-  $('cyes').addEventListener('click', () => { $('co').classList.remove('open'); if (S.confirmCb) { S.confirmCb(); S.confirmCb = null } })
+  <div id="toast"></div>
 
-  // STORAGE
-  function save() { try { localStorage.setItem('sl_v1', JSON.stringify({ nodes: S.nodes, rootId: S.rootId })) } catch (e) { toast('Storage full! Export your data.') } }
-  function load() { try { const r = localStorage.getItem('sl_v1'); if (!r) return false; const d = JSON.parse(r); S.nodes = d.nodes || {}; S.rootId = d.rootId || null; return true } catch (e) { return false } }
+  <script>
+    const S = { nodes: {}, rootId: null, selId: null, tf: { x: 0, y: 0, sc: 1 }, modal: null, drag: null, pan: false, po: null, confirmCb: null }
+    const uid = () => crypto.randomUUID()
+    const $ = id => document.getElementById(id)
+    const CW = 200, CH = 138, GY = 220, GX = 240
 
-  // NODES
-  function mkNode(d) { return { id: uid(), fullName: d.fullName || '', nickname: d.nickname || '', label: d.label || '', gender: d.gender || 'unknown', phone: d.phone || '', address: d.address || '', parentIds: [], childrenIds: [], spouseId: null, isRoot: d.isRoot || false, x: d.x ?? 0, y: d.y ?? 0 } }
-  function initRoot() { const r = mkNode({ fullName: 'You', isRoot: true, x: 0, y: 0 }); S.nodes[r.id] = r; S.rootId = r.id; save() }
-  function reposChildren(p) { const ids = p.childrenIds; if (!ids.length) return; const tw = (ids.length - 1) * GX; ids.forEach((cid, i) => { if (S.nodes[cid]) S.nodes[cid].x = p.x - tw / 2 + i * GX }) }
+    function ini(n) { if (!n) return '?'; return n.trim().split(/\s+/).slice(0, 2).map(w => w[0].toUpperCase()).join('') }
 
-  // ADD/EDIT/DELETE
-  function addNode(fromId, type, fd) {
-   const from = S.nodes[fromId]; if (!from) return
-   let x, y
-   if (type === 'parent') { x = from.x + (from.parentIds.length === 1 ? GX / 2 : 0); y = from.y - GY; if (from.parentIds.length === 1) { const ex = S.nodes[from.parentIds[0]]; if (ex) ex.x = from.x - GX / 2 } }
-   else if (type === 'spouse') { x = from.x + CW + 80; y = from.y }
-   else { const idx = from.childrenIds.length, tw = idx * GX; x = from.x - tw / 2 + idx * GX; y = from.y + GY }
-   const node = mkNode({ ...fd, x, y }); S.nodes[node.id] = node
-   if (type === 'parent') { from.parentIds.push(node.id); node.childrenIds.push(fromId) }
-   else if (type === 'spouse') { from.spouseId = node.id; node.spouseId = fromId }
-   else {
-    from.childrenIds.push(node.id); node.parentIds.push(fromId)
-    // FIX #4: link child to spouse as well
-    if (from.spouseId && S.nodes[from.spouseId]) { const sp = S.nodes[from.spouseId]; if (!sp.childrenIds.includes(node.id)) { sp.childrenIds.push(node.id); node.parentIds.push(from.spouseId) } }
-    reposChildren(from)
-   }
-   save(); render(); selNode(node.id); toast('Added ' + (node.fullName || 'person'))
-  }
-  function editNode(id, fd) { if (!S.nodes[id]) return; const n = S.nodes[id]; n.fullName = fd.fullName; n.nickname = fd.nickname; n.label = fd.label; n.gender = fd.gender; n.phone = fd.phone; n.address = fd.address; save(); render(); if (S.selId === id) updPanel(id); toast('Changes saved') }
-  function delNode(id) {
-   const n = S.nodes[id]; if (!n) return
-   n.parentIds.forEach(pid => { if (S.nodes[pid]) S.nodes[pid].childrenIds = S.nodes[pid].childrenIds.filter(x => x !== id) })
-   n.childrenIds.forEach(cid => { if (S.nodes[cid]) S.nodes[cid].parentIds = S.nodes[cid].parentIds.filter(x => x !== id) })
-   if (n.spouseId && S.nodes[n.spouseId]) S.nodes[n.spouseId].spouseId = null
-   if (id === S.rootId) { const rem = Object.keys(S.nodes).filter(k => k !== id); S.rootId = rem[0] || null; if (S.rootId) S.nodes[S.rootId].isRoot = true }
-   delete S.nodes[id]
-   if (S.selId === id) { S.selId = null; closePanel() }
-   save(); render(); toast('Person removed')
-  }
+    // CONFIRM FIX #2
+    function confirm2(title, msg, cb) { $('ctit').textContent = title; $('cmsg').textContent = msg; S.confirmCb = cb; $('co').classList.add('open') }
+    $('cno').addEventListener('click', () => { $('co').classList.remove('open'); S.confirmCb = null })
+    $('cyes').addEventListener('click', () => { $('co').classList.remove('open'); if (S.confirmCb) { S.confirmCb(); S.confirmCb = null } })
 
-  // RENDER
-  const sg = $('sg'), nw = $('nw')
-  function applyTf() { const { x, y, sc } = S.tf; nw.style.transform = `translate(${x}px,${y}px) scale(${sc})`; nw.style.transformOrigin = '0 0'; sg.setAttribute('transform', `translate(${x},${y}) scale(${sc})`) }
-  function render() { renderConns(); renderNodes(); $('eh').style.display = Object.keys(S.nodes).length <= 1 ? 'block' : 'none' }
+    // STORAGE
+    function save() { try { localStorage.setItem('sl_v1', JSON.stringify({ nodes: S.nodes, rootId: S.rootId })) } catch (e) { toast('Storage full! Export your data.') } }
+    function load() { try { const r = localStorage.getItem('sl_v1'); if (!r) return false; const d = JSON.parse(r); S.nodes = d.nodes || {}; S.rootId = d.rootId || null; return true } catch (e) { return false } }
 
-  function renderConns() {
-   sg.innerHTML = ''
-   const q = $('s').value.trim().toLowerCase()
-   Object.values(S.nodes).forEach(p => {
-    p.childrenIds.forEach(cid => {
-     const c = S.nodes[cid]; if (!c) return
-     const x1 = p.x, y1 = p.y + CH / 2, x2 = c.x, y2 = c.y - CH / 2, cy = (y1 + y2) / 2
-     const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-     path.setAttribute('d', `M${x1},${y1} C${x1},${cy} ${x2},${cy} ${x2},${y2}`)
-     path.setAttribute('class', 'cp' + (q && (mn(p, q) || mn(c, q)) ? ' hl' : ''))
-     sg.appendChild(path)
-    })
-   })
-   const drawn = new Set()
-   Object.values(S.nodes).forEach(n => {
-    if (!n.spouseId || drawn.has(n.id) || drawn.has(n.spouseId)) return
-    const sp = S.nodes[n.spouseId]; if (!sp) return
-    drawn.add(n.id); drawn.add(n.spouseId)
-    const lx = Math.min(n.x, sp.x), rx = Math.max(n.x, sp.x), my2 = (n.y + sp.y) / 2
-    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-    path.setAttribute('d', `M${lx + CW / 2},${my2} H${rx - CW / 2}`)
-    path.setAttribute('class', 'sp')
-    sg.appendChild(path)
-   })
-  }
+    // NODES
+    function mkNode(d) { return { id: uid(), fullName: d.fullName || '', nickname: d.nickname || '', label: d.label || '', gender: d.gender || 'unknown', phone: d.phone || '', address: d.address || '', parentIds: [], childrenIds: [], spouseId: null, siblingIds: [], isRoot: d.isRoot || false, x: d.x ?? 0, y: d.y ?? 0 } }
+    function ensureSibArr(n) { if (!Array.isArray(n.siblingIds)) n.siblingIds = [] }
+    function initRoot() { const r = mkNode({ fullName: 'You', isRoot: true, x: 0, y: 0 }); S.nodes[r.id] = r; S.rootId = r.id; save() }
+    function reposChildren(p) { const ids = p.childrenIds; if (!ids.length) return; const tw = (ids.length - 1) * GX; ids.forEach((cid, i) => { if (S.nodes[cid]) S.nodes[cid].x = p.x - tw / 2 + i * GX }) }
 
-  function mn(node, q) { return node.fullName.toLowerCase().includes(q) || node.nickname.toLowerCase().includes(q) || node.label.toLowerCase().includes(q) }
+    // ADD/EDIT/DELETE
+    function addNode(fromId, type, fd) {
+      const from = S.nodes[fromId]; if (!from) return
+      let x, y
+      if (type === 'parent') { x = from.x + (from.parentIds.length === 1 ? GX / 2 : 0); y = from.y - GY; if (from.parentIds.length === 1) { const ex = S.nodes[from.parentIds[0]]; if (ex) ex.x = from.x - GX / 2 } }
+      else if (type === 'spouse') { x = from.x + CW + 80; y = from.y }
+      else { const idx = from.childrenIds.length, tw = idx * GX; x = from.x - tw / 2 + idx * GX; y = from.y + GY }
+      const node = mkNode({ ...fd, x, y }); S.nodes[node.id] = node
+      if (type === 'parent') { from.parentIds.push(node.id); node.childrenIds.push(fromId) }
+      else if (type === 'spouse') { from.spouseId = node.id; node.spouseId = fromId }
+      else {
+        from.childrenIds.push(node.id); node.parentIds.push(fromId)
+        // FIX #4: link child to spouse as well
+        if (from.spouseId && S.nodes[from.spouseId]) { const sp = S.nodes[from.spouseId]; if (!sp.childrenIds.includes(node.id)) { sp.childrenIds.push(node.id); node.parentIds.push(from.spouseId) } }
+        reposChildren(from)
+      }
+      save(); render(); selNode(node.id); toast('Added ' + (node.fullName || 'person'))
+    }
+    function editNode(id, fd) { if (!S.nodes[id]) return; const n = S.nodes[id]; n.fullName = fd.fullName; n.nickname = fd.nickname; n.label = fd.label; n.gender = fd.gender; n.phone = fd.phone; n.address = fd.address; save(); render(); if (S.selId === id) updPanel(id); toast('Changes saved') }
+    function delNode(id) {
+      const n = S.nodes[id]; if (!n) return
+      n.parentIds.forEach(pid => { if (S.nodes[pid]) S.nodes[pid].childrenIds = S.nodes[pid].childrenIds.filter(x => x !== id) })
+      n.childrenIds.forEach(cid => { if (S.nodes[cid]) S.nodes[cid].parentIds = S.nodes[cid].parentIds.filter(x => x !== id) })
+      if (n.spouseId && S.nodes[n.spouseId]) S.nodes[n.spouseId].spouseId = null
+      if (Array.isArray(n.siblingIds)) n.siblingIds.forEach(sid => { const s = S.nodes[sid]; if (s && Array.isArray(s.siblingIds)) s.siblingIds = s.siblingIds.filter(x => x !== id) })
+      if (id === S.rootId) { const rem = Object.keys(S.nodes).filter(k => k !== id); S.rootId = rem[0] || null; if (S.rootId) S.nodes[S.rootId].isRoot = true }
+      delete S.nodes[id]
+      if (S.selId === id) { S.selId = null; closePanel() }
+      save(); render(); toast('Person removed')
+    }
 
-  function renderNodes() {
-   const q = $('s').value.trim().toLowerCase()
-   const ex = {}; nw.querySelectorAll('.no').forEach(el => { ex[el.dataset.id] = el })
-   Object.keys(ex).forEach(id => { if (!S.nodes[id]) ex[id].remove() })
-   Object.values(S.nodes).forEach(node => {
-    let el = ex[node.id]
-    if (!el) { el = buildEl(node); nw.appendChild(el) } else refreshEl(el, node)
-    el.style.left = node.x + 'px'; el.style.top = node.y + 'px'
-    el.querySelector('.nc').classList.toggle('dm', !!(q && !mn(node, q)))
-    el.classList.toggle('sel', node.id === S.selId)
-   })
-  }
+    // RENDER
+    const sg = $('sg'), nw = $('nw')
+    function applyTf() { const { x, y, sc } = S.tf; nw.style.transform = `translate(${x}px,${y}px) scale(${sc})`; nw.style.transformOrigin = '0 0'; sg.setAttribute('transform', `translate(${x},${y}) scale(${sc})`) }
+    function render() { renderConns(); renderNodes(); $('eh').style.display = Object.keys(S.nodes).length <= 1 ? 'block' : 'none' }
 
-  function buildEl(node) { const el = document.createElement('div'); el.className = 'no'; el.dataset.id = node.id; el.innerHTML = nhtml(node); bindEl(el, node); return el }
+    function mkPath(d, cls) { const p = document.createElementNS('http://www.w3.org/2000/svg', 'path'); p.setAttribute('d', d); p.setAttribute('class', cls); sg.appendChild(p); return p }
+    function mkLine(x1, y1, x2, y2, cls) { const l = document.createElementNS('http://www.w3.org/2000/svg', 'line'); l.setAttribute('x1', x1); l.setAttribute('y1', y1); l.setAttribute('x2', x2); l.setAttribute('y2', y2); l.setAttribute('class', cls); sg.appendChild(l); return l }
 
-  function refreshEl(el, node) {
-   const av = el.querySelector('.av'); av.className = 'av ' + (node.gender === 'male' ? 'm' : node.gender === 'female' ? 'f' : 'u'); av.textContent = ini(node.fullName)
-   const bg = el.querySelector('.nb'); bg.textContent = node.label || (node.isRoot ? 'You' : ''); bg.style.display = (node.label || node.isRoot) ? 'inline-block' : 'none'
-   el.querySelector('.nn').textContent = node.fullName || '(No name)'
-   el.querySelector('.nk').textContent = node.nickname ? `"${node.nickname}"` : ''
-   el.querySelector('.nd').textContent = node.phone || node.address || ''
-   const nc = el.querySelector('.nc'); nc.className = 'nc' + (node.isRoot ? ' rc' : '') + (node.spouseId ? ' sc' : '')
-   const sb = el.querySelector('[data-a="spouse"]'); if (sb) sb.style.display = node.spouseId ? 'none' : ''
-  }
+    function renderConns() {
+      sg.innerHTML = ''
+      const q = $('s').value.trim().toLowerCase()
+      const hl = n => !!(q && mn(n, q))
 
-  function nhtml(node) {
-   const bl = node.label || (node.isRoot ? 'You' : '')
-   return `<div class="ar">
-    <button class="ab" data-a="parent" title="Add Parent">+</button>
+      // ── 1. Spouse links (dashed teal horizontal bar between card edges) ──────
+      const drawnSpouse = new Set()
+      Object.values(S.nodes).forEach(n => {
+        if (!n.spouseId || drawnSpouse.has(n.id) || drawnSpouse.has(n.spouseId)) return
+        const sp = S.nodes[n.spouseId]; if (!sp) return
+        drawnSpouse.add(n.id); drawnSpouse.add(n.spouseId)
+        const left = n.x < sp.x ? n : sp, right = n.x < sp.x ? sp : n
+        const y = (left.y + right.y) / 2
+        const cls = 'sp' + (hl(n) || hl(sp) ? ' hl' : '')
+        mkLine(left.x + CW / 2, y, right.x - CW / 2, y, cls)
+      })
+
+      // ── 2. Family-unit connectors (parent(s) → children) ────────────────────
+      // Group children by their parent-set key so siblings share one connector.
+      // Key = sorted parentIds joined by '|'
+      const familyGroups = {} // key → {parentIds, childIds}
+      Object.values(S.nodes).forEach(child => {
+        if (!child.parentIds.length) return
+        const key = [...child.parentIds].sort().join('|')
+        if (!familyGroups[key]) familyGroups[key] = { parentIds: child.parentIds, childIds: [] }
+        familyGroups[key].childIds.push(child.id)
+      })
+
+      Object.values(familyGroups).forEach(({ parentIds, childIds }) => {
+        const parents = parentIds.map(id => S.nodes[id]).filter(Boolean)
+        const children = childIds.map(id => S.nodes[id]).filter(Boolean)
+        if (!parents.length || !children.length) return
+
+        const anyHl = parents.some(hl) || children.some(hl)
+        const cpCls = 'cp' + (anyHl ? ' hl' : '')
+
+        // Origin point: midpoint between parents (or single parent centre)
+        let ox, oy
+        if (parents.length === 1) {
+          ox = parents[0].x
+          oy = parents[0].y + CH / 2
+        } else {
+          // midpoint of the couple bar (between their card edges)
+          const left = parents[0].x < parents[1].x ? parents[0] : parents[1]
+          const right = parents[0].x < parents[1].x ? parents[1] : parents[0]
+          ox = (left.x + CW / 2 + right.x - CW / 2) / 2
+          oy = (left.y + right.y) / 2          // bar is at card mid-height
+        }
+
+        // Drop point: vertical stem drops halfway to children row
+        const childY = children.reduce((s, c) => s + c.y, 0) / children.length
+        const junctionY = oy + (childY - oy) * 0.45  // ~45% of the way down
+
+        // Vertical stem from origin down to junction
+        mkLine(ox, oy, ox, junctionY, cpCls)
+
+        if (children.length === 1) {
+          // Single child — straight line from junction to child top
+          const c = children[0]
+          mkLine(ox, junctionY, c.x, junctionY, cpCls)
+          mkLine(c.x, junctionY, c.x, c.y - CH / 2, cpCls)
+        } else {
+          // Multiple children — horizontal rail at junction, then drop to each
+          const xs = children.map(c => c.x)
+          const minX = Math.min(...xs), maxX = Math.max(...xs)
+          mkLine(minX, junctionY, maxX, junctionY, cpCls)
+          children.forEach(c => {
+            mkLine(c.x, junctionY, c.x, c.y - CH / 2, cpCls)
+          })
+        }
+      })
+
+      // ── 3. Explicit sibling lines (purple dotted, between sibling cards) ──────
+      const drawnSib = new Set()
+      Object.values(S.nodes).forEach(n => {
+        if (!Array.isArray(n.siblingIds)) return
+        n.siblingIds.forEach(sid => {
+          const pairKey = [n.id, sid].sort().join('|')
+          if (drawnSib.has(pairKey)) return
+          drawnSib.add(pairKey)
+          const sib = S.nodes[sid]; if (!sib) return
+          const left = n.x < sib.x ? n : sib, right = n.x < sib.x ? sib : n
+          const midY = (left.y + right.y) / 2
+          const x1 = left.x + CW / 2, x2 = right.x - CW / 2
+          const cls = 'sb' + (hl(n) || hl(sib) ? ' hl' : '')
+          mkLine(x1, midY, x2, midY, cls)
+        })
+      })
+    }
+
+    function mn(node, q) { return node.fullName.toLowerCase().includes(q) || node.nickname.toLowerCase().includes(q) || node.label.toLowerCase().includes(q) }
+
+    function renderNodes() {
+      const q = $('s').value.trim().toLowerCase()
+      const ex = {}; nw.querySelectorAll('.no').forEach(el => { ex[el.dataset.id] = el })
+      Object.keys(ex).forEach(id => { if (!S.nodes[id]) ex[id].remove() })
+      Object.values(S.nodes).forEach(node => {
+        let el = ex[node.id]
+        if (!el) { el = buildEl(node); nw.appendChild(el) } else refreshEl(el, node)
+        el.style.left = node.x + 'px'; el.style.top = node.y + 'px'
+        el.querySelector('.nc').classList.toggle('dm', !!(q && !mn(node, q)))
+        el.classList.toggle('sel', node.id === S.selId)
+      })
+    }
+
+    function buildEl(node) { const el = document.createElement('div'); el.className = 'no'; el.dataset.id = node.id; el.innerHTML = nhtml(node); bindEl(el, node); return el }
+
+    function refreshEl(el, node) {
+      const av = el.querySelector('.av'); av.className = 'av ' + (node.gender === 'male' ? 'm' : node.gender === 'female' ? 'f' : 'u'); av.textContent = ini(node.fullName)
+      const bg = el.querySelector('.nb'); bg.textContent = node.label || (node.isRoot ? 'You' : ''); bg.style.display = (node.label || node.isRoot) ? 'inline-block' : 'none'
+      el.querySelector('.nn').textContent = node.fullName || '(No name)'
+      el.querySelector('.nk').textContent = node.nickname ? `"${node.nickname}"` : ''
+      el.querySelector('.nd').textContent = node.phone || node.address || ''
+      const nc = el.querySelector('.nc'); nc.className = 'nc' + (node.isRoot ? ' rc' : '') + (node.spouseId ? ' sc' : '')
+      const sb = el.querySelector('[data-a="spouse"]'); if (sb) sb.style.display = node.spouseId ? 'none' : ''
+      const pb = el.querySelector('[data-a="parent"]'); if (pb) { pb.style.opacity = node.parentIds.length >= 2 ? '.3' : ''; pb.style.pointerEvents = node.parentIds.length >= 2 ? 'none' : '' }
+      const sib = el.querySelector('[data-a="sibling"]'); if (sib) sib.style.display = node.parentIds.length > 0 ? '' : ' none'
+    }
+
+    function nhtml(node) {
+      const bl = node.label || (node.isRoot ? 'You' : '')
+      const parentMax = node.parentIds.length >= 2
+      const sibAvail = node.parentIds.length > 0
+      return `<div class="ar">
+    <button class="ab" data-a="parent" title="Add Parent" ${parentMax ? 'style="opacity:.3;pointer-events:none"' : ''}>+</button>
+    <button class="asib" data-a="sibling" title="Add Sibling" style="${sibAvail ? '' : 'display:none'}">⇔</button>
     <button class="as" data-a="spouse" title="Add Spouse/Partner" style="${node.spouseId ? 'display:none' : ''}">&#128141;</button>
   </div>
   <div class="nc${node.isRoot ? ' rc' : ''}${node.spouseId ? ' sc' : ''}">
@@ -1399,132 +1689,291 @@
     <div class="dt dtb"></div>
   </div>
   <button class="ab abc" data-a="child" title="Add Child">+</button>`
-  }
-
-  function bindEl(el, node) {
-   el.querySelector('.nc').addEventListener('mousedown', e => { if (e.target.closest('button')) return; e.stopPropagation(); S.drag = { id: node.id, ox: e.clientX, oy: e.clientY, nx: node.x, ny: node.y, mv: false } })
-   el.querySelector('.nc').addEventListener('click', e => { if (e.target.closest('.nab')) return; if (S.drag && S.drag.mv) return; selNode(node.id) })
-   el.querySelector('.ned').addEventListener('click', e => { e.stopPropagation(); openModal('edit', node.id) })
-   el.querySelector('.ndl').addEventListener('click', e => { e.stopPropagation(); confirm2(`Remove "${node.fullName || 'this person'}"?`, 'This will remove them and their connections. Orphaned members remain.', () => delNode(node.id)) })
-   el.querySelector('[data-a="parent"]').addEventListener('click', e => { e.stopPropagation(); if (node.parentIds.length >= 2) { toast('Max 2 parents'); return }; openModal('add', null, node.id, 'parent') })
-   el.querySelector('[data-a="child"]').addEventListener('click', e => { e.stopPropagation(); openModal('add', null, node.id, 'child') })
-   const sb = el.querySelector('[data-a="spouse"]')
-   if (sb) sb.addEventListener('click', e => { e.stopPropagation(); if (node.spouseId) { toast('Already has a partner'); return }; openModal('add', null, node.id, 'spouse') })
-  }
-
-  // PAN & ZOOM
-  const cvs = $('cw')
-  cvs.addEventListener('mousedown', e => { if (e.target.closest('.nc') || e.target.closest('.ab') || e.target.closest('.as')) return; S.pan = true; S.po = { x: e.clientX, y: e.clientY, tx: S.tf.x, ty: S.tf.y }; cvs.classList.add('pan') })
-  document.addEventListener('mousemove', e => {
-   if (S.drag) { const dx = (e.clientX - S.drag.ox) / S.tf.sc, dy = (e.clientY - S.drag.oy) / S.tf.sc; if (Math.abs(dx) > 3 || Math.abs(dy) > 3) S.drag.mv = true; if (S.drag.mv) { const n = S.nodes[S.drag.id]; if (n) { n.x = S.drag.nx + dx; n.y = S.drag.ny + dy }; renderConns(); const el = nw.querySelector(`[data-id="${S.drag.id}"]`); if (el && S.nodes[S.drag.id]) { el.style.left = S.nodes[S.drag.id].x + 'px'; el.style.top = S.nodes[S.drag.id].y + 'px' } }; return }
-   if (S.pan && S.po) { S.tf.x = S.po.tx + (e.clientX - S.po.x); S.tf.y = S.po.ty + (e.clientY - S.po.y); applyTf() }
-  })
-  document.addEventListener('mouseup', () => { if (S.drag && S.drag.mv) { save(); render() }; S.drag = null; S.pan = false; S.po = null; cvs.classList.remove('pan') })
-  cvs.addEventListener('wheel', e => { e.preventDefault(); const f = e.deltaY < 0 ? 1.08 : .93, r = cvs.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top; S.tf.x = mx + (S.tf.x - mx) * f; S.tf.y = my + (S.tf.y - my) * f; S.tf.sc = Math.max(.15, Math.min(3, S.tf.sc * f)); applyTf() }, { passive: false })
-  $('zi').addEventListener('click', () => zBy(1.2))
-  $('zo').addEventListener('click', () => zBy(.83))
-  function zBy(f) { const r = cvs.getBoundingClientRect(), cx = r.width / 2, cy = r.height / 2; S.tf.x = cx + (S.tf.x - cx) * f; S.tf.y = cy + (S.tf.y - cy) * f; S.tf.sc = Math.max(.15, Math.min(3, S.tf.sc * f)); applyTf() }
-  $('rv').addEventListener('click', centre)
-  function centre() { const r = cvs.getBoundingClientRect(); S.tf.x = r.width / 2; S.tf.y = r.height / 2; S.tf.sc = 1; applyTf() }
-
-  // SELECT & PANEL
-  function selNode(id) { S.selId = id; renderNodes(); updPanel(id); $('pn').classList.add('open') }
-  function updPanel(id) {
-   const n = S.nodes[id]; if (!n) return
-   const av = $('pa'); av.className = n.gender === 'male' ? 'm' : n.gender === 'female' ? 'f' : 'u'; av.textContent = ini(n.fullName)
-   $('ptit').textContent = n.fullName || '(No name)'
-   $('pnk').textContent = n.nickname ? `"${n.nickname}"` : ''; $('pnk').style.display = n.nickname ? 'block' : 'none'
-   const bg = $('pbg'); bg.textContent = n.label || (n.isRoot ? 'You (Root)' : ''); bg.style.display = (n.label || n.isRoot) ? 'inline-block' : 'none'
-   const sv = (eid, val) => { const el = $(eid); el.textContent = val || '--'; el.className = 'prv' + (val ? '' : ' pre') }
-   sv('pph', n.phone); sv('pad2', n.address)
-   sv('psp', n.spouseId ? S.nodes[n.spouseId]?.fullName : null)
-   sv('ppar', n.parentIds.map(p => S.nodes[p]?.fullName || '?').join(', ') || null)
-   sv('pch', n.childrenIds.map(c => S.nodes[c]?.fullName || '?').join(', ') || null)
-  }
-  function closePanel() { S.selId = null; $('pn').classList.remove('open'); renderNodes() }
-  $('pc').addEventListener('click', closePanel)
-  $('ped').addEventListener('click', () => { if (S.selId) openModal('edit', S.selId) })
-  $('pdl').addEventListener('click', () => { if (!S.selId) return; const n = S.nodes[S.selId]; confirm2(`Remove "${n?.fullName || 'this person'}"?`, 'This will remove them and their connections.', () => delNode(S.selId)) })
-
-  // MODAL
-  function openModal(mode, nodeId = null, parentId = null, type = null) {
-   S.modal = { mode, nodeId, parentId, type }
-   const t = { edit: 'Edit Person', parent: 'Add Parent', child: 'Add Child / Descendant', spouse: 'Add Spouse / Partner' }
-   $('mt').textContent = t[mode === 'edit' ? 'edit' : type] || 'Add Person'
-   $('fn').value = ''; $('fk').value = ''; $('fg').value = 'unknown'; $('fl').value = ''; $('flc').value = ''; $('flc').style.display = 'none'; $('fp').value = ''; $('fa').value = ''
-   if (mode === 'edit' && nodeId) {
-    const n = S.nodes[nodeId]; if (n) {
-     $('fn').value = n.fullName; $('fk').value = n.nickname; $('fg').value = n.gender; $('fp').value = n.phone; $('fa').value = n.address
-     const opts = [...$('fl').options].map(o => o.value)
-     if (opts.includes(n.label)) $('fl').value = n.label
-     else if (n.label) { $('fl').value = '__c'; $('flc').value = n.label; $('flc').style.display = 'block' }
     }
-   }
-   $('mo').classList.add('open'); $('fn').focus()
-  }
-  function closeModal() { S.modal = null; $('mo').classList.remove('open') }
-  function getForm() { const ls = $('fl').value, label = ls === '__c' ? $('flc').value : ls; return { fullName: $('fn').value.trim(), nickname: $('fk').value.trim(), gender: $('fg').value, label, phone: $('fp').value.trim(), address: $('fa').value.trim() } }
-  $('mc').addEventListener('click', closeModal)
-  $('mca').addEventListener('click', closeModal)
-  $('mo').addEventListener('click', e => { if (e.target === $('mo')) closeModal() })
-  $('msv').addEventListener('click', () => {
-   const d = getForm()
-   if (!d.fullName) { $('fn').style.borderColor = 'var(--red)'; $('fn').focus(); return }
-   $('fn').style.borderColor = ''
-   const m = S.modal; if (!m) return
-   if (m.mode === 'add') addNode(m.parentId, m.type, d)
-   else editNode(m.nodeId, d)
-   closeModal()
-  })
-  $('fl').addEventListener('change', () => { $('flc').style.display = $('fl').value === '__c' ? 'block' : 'none'; if ($('fl').value === '__c') $('flc').focus() })
-  document.addEventListener('keydown', e => {
-   if (e.key !== 'Escape') return
-   if ($('co').classList.contains('open')) { $('co').classList.remove('open'); S.confirmCb = null }
-   else if ($('mo').classList.contains('open')) closeModal()
-   else closePanel()
-  })
 
-  // SEARCH
-  $('s').addEventListener('input', function () {
-   const q = this.value.trim().toLowerCase()
-   renderConns(); renderNodes()
-   const res = $('sr')
-   if (!q) { res.classList.remove('open'); return }
-   const matches = Object.values(S.nodes).filter(n => mn(n, q))
-   if (!matches.length) { res.innerHTML = '<div class="sri" style="color:var(--ink-faint)">No results</div>'; res.classList.add('open'); return }
-   res.innerHTML = matches.slice(0, 8).map(n => `<div class="sri" data-id="${n.id}"><strong>${n.fullName || '(No name)'}</strong>${n.nickname ? ` &middot; "${n.nickname}"` : ''}${n.label ? ` <span style="color:var(--gold-lt);font-size:11px">${n.label}</span>` : ''}</div>`).join('')
-   res.classList.add('open')
-   res.querySelectorAll('.sri[data-id]').forEach(el => { el.addEventListener('click', () => { const node = S.nodes[el.dataset.id]; if (!node) return; $('s').value = ''; res.classList.remove('open'); renderConns(); renderNodes(); panTo(node); selNode(node.id) }) })
-  })
-  document.addEventListener('click', e => { if (!e.target.closest('#sw')) $('sr').classList.remove('open') })
-  function panTo(node) { const r = cvs.getBoundingClientRect(); S.tf.x = r.width / 2 - node.x * S.tf.sc; S.tf.y = r.height / 2 - node.y * S.tf.sc; applyTf() }
+    function bindEl(el, node) {
+      el.querySelector('.nc').addEventListener('mousedown', e => { if (e.target.closest('button')) return; e.stopPropagation(); S.drag = { id: node.id, ox: e.clientX, oy: e.clientY, nx: node.x, ny: node.y, mv: false } })
+      el.querySelector('.nc').addEventListener('click', e => { if (e.target.closest('.nab')) return; if (S.drag && S.drag.mv) return; selNode(node.id) })
+      el.querySelector('.ned').addEventListener('click', e => { e.stopPropagation(); openModal('edit', node.id) })
+      el.querySelector('.ndl').addEventListener('click', e => { e.stopPropagation(); confirm2(`Remove "${node.fullName || 'this person'}"?`, 'This will remove them and their connections. Orphaned members remain.', () => delNode(node.id)) })
+      el.querySelector('[data-a="parent"]').addEventListener('click', e => { e.stopPropagation(); if (node.parentIds.length >= 2) { toast('Max 2 parents'); return }; openLinkPicker('parent', node.id) })
+      el.querySelector('[data-a="child"]').addEventListener('click', e => { e.stopPropagation(); openLinkPicker('child', node.id) })
+      const sib = el.querySelector('[data-a="sibling"]')
+      if (sib) sib.addEventListener('click', e => { e.stopPropagation(); openLinkPicker('sibling', node.id) })
+      const sb = el.querySelector('[data-a="spouse"]')
+      if (sb) sb.addEventListener('click', e => { e.stopPropagation(); if (node.spouseId) { toast('Already has a partner'); return }; openLinkPicker('spouse', node.id) })
+    }
 
-  // EXPORT/IMPORT
-  $('exp').addEventListener('click', () => {
-   const blob = new Blob([JSON.stringify({ version: '1.0', exportedAt: new Date().toISOString(), rootNodeId: S.rootId, nodes: S.nodes }, null, 2)], { type: 'application/json' })
-   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `silsilah-${new Date().toISOString().slice(0, 10)}.json`; a.click(); URL.revokeObjectURL(a.href); toast('Family tree exported!')
-  })
-  $('imp').addEventListener('change', function () {
-   const file = this.files[0]; if (!file) return
-   const reader = new FileReader()
-   reader.onload = e => {
-    try {
-     const d = JSON.parse(e.target.result)
-     if (!d.nodes || !d.rootNodeId) throw new Error()
-     const count = Object.keys(d.nodes).length
-     confirm2(`Import ${count} people?`, 'This will replace your current tree. Export first to keep a backup.', () => { S.nodes = d.nodes; S.rootId = d.rootNodeId; S.selId = null; closePanel(); save(); render(); centre(); toast(`Imported ${count} people!`) })
-    } catch (e) { toast('Invalid file. Use a Silsilah JSON export.') }
-   }
-   reader.readAsText(file); this.value = ''
-  })
+    // PAN & ZOOM
+    const cvs = $('cw')
+    cvs.addEventListener('mousedown', e => { if (e.target.closest('.nc') || e.target.closest('.ab') || e.target.closest('.as')) return; S.pan = true; S.po = { x: e.clientX, y: e.clientY, tx: S.tf.x, ty: S.tf.y }; cvs.classList.add('pan') })
+    document.addEventListener('mousemove', e => {
+      if (S.drag) { const dx = (e.clientX - S.drag.ox) / S.tf.sc, dy = (e.clientY - S.drag.oy) / S.tf.sc; if (Math.abs(dx) > 3 || Math.abs(dy) > 3) S.drag.mv = true; if (S.drag.mv) { const n = S.nodes[S.drag.id]; if (n) { n.x = S.drag.nx + dx; n.y = S.drag.ny + dy }; renderConns(); const el = nw.querySelector(`[data-id="${S.drag.id}"]`); if (el && S.nodes[S.drag.id]) { el.style.left = S.nodes[S.drag.id].x + 'px'; el.style.top = S.nodes[S.drag.id].y + 'px' } }; return }
+      if (S.pan && S.po) { S.tf.x = S.po.tx + (e.clientX - S.po.x); S.tf.y = S.po.ty + (e.clientY - S.po.y); applyTf() }
+    })
+    document.addEventListener('mouseup', () => { if (S.drag && S.drag.mv) { save(); render() }; S.drag = null; S.pan = false; S.po = null; cvs.classList.remove('pan') })
+    cvs.addEventListener('wheel', e => { e.preventDefault(); const f = e.deltaY < 0 ? 1.08 : .93, r = cvs.getBoundingClientRect(), mx = e.clientX - r.left, my = e.clientY - r.top; S.tf.x = mx + (S.tf.x - mx) * f; S.tf.y = my + (S.tf.y - my) * f; S.tf.sc = Math.max(.15, Math.min(3, S.tf.sc * f)); applyTf() }, { passive: false })
 
-  // TOAST
-  let tt; function toast(m) { const el = $('toast'); el.textContent = m; el.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => el.classList.remove('show'), 2800) }
+    // TOUCH SUPPORT
+    let T = { touches: [], pinchDist: null, panStart: null, tfStart: null, dragNode: null, dragStart: null }
+    function tdist(a, b) { return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY) }
+    function tmid(a, b, r) { return { x: (a.clientX + b.clientX) / 2 - r.left, y: (a.clientY + b.clientY) / 2 - r.top } }
 
-  // INIT
-  function init() { const ok = load(); if (!ok || !Object.keys(S.nodes).length) initRoot(); centre(); render() }
-  init()
- </script>
+    cvs.addEventListener('touchstart', e => {
+      T.touches = [...e.touches]
+      if (e.touches.length === 1) {
+        const t = e.touches[0]
+        const el = document.elementFromPoint(t.clientX, t.clientY)
+        const nc = el && el.closest('.nc')
+        const nodeEl = nc && nc.closest('.no')
+        if (nodeEl && !el.closest('button')) {
+          const nid = nodeEl.dataset.id; const node = S.nodes[nid]
+          if (node) { T.dragNode = { id: nid, ox: t.clientX, oy: t.clientY, nx: node.x, ny: node.y, mv: false }; return }
+        }
+        T.panStart = { x: t.clientX, y: t.clientY, tx: S.tf.x, ty: S.tf.y }; T.tfStart = null
+      } else if (e.touches.length === 2) {
+        T.dragNode = null; T.panStart = null
+        const r = cvs.getBoundingClientRect()
+        T.pinchDist = tdist(e.touches[0], e.touches[1])
+        T.tfStart = { ...S.tf }
+        T.pinchMid = tmid(e.touches[0], e.touches[1], r)
+      }
+      e.preventDefault()
+    }, { passive: false })
+
+    cvs.addEventListener('touchmove', e => {
+      e.preventDefault()
+      if (e.touches.length === 1 && T.dragNode) {
+        const t = e.touches[0]
+        const dx = (t.clientX - T.dragNode.ox) / S.tf.sc, dy = (t.clientY - T.dragNode.oy) / S.tf.sc
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) T.dragNode.mv = true
+        if (T.dragNode.mv) { const n = S.nodes[T.dragNode.id]; if (n) { n.x = T.dragNode.nx + dx; n.y = T.dragNode.ny + dy }; renderConns(); const el = nw.querySelector(`[data-id="${T.dragNode.id}"]`); if (el && S.nodes[T.dragNode.id]) { el.style.left = S.nodes[T.dragNode.id].x + 'px'; el.style.top = S.nodes[T.dragNode.id].y + 'px' } }
+        return
+      }
+      if (e.touches.length === 1 && T.panStart) {
+        const t = e.touches[0]
+        S.tf.x = T.panStart.tx + (t.clientX - T.panStart.x)
+        S.tf.y = T.panStart.ty + (t.clientY - T.panStart.y)
+        applyTf(); return
+      }
+      if (e.touches.length === 2 && T.tfStart) {
+        const r = cvs.getBoundingClientRect()
+        const nd = tdist(e.touches[0], e.touches[1])
+        const f = nd / T.pinchDist
+        const sc = Math.max(.15, Math.min(3, T.tfStart.sc * f))
+        const mx = T.pinchMid.x, my = T.pinchMid.y
+        S.tf.x = mx + (T.tfStart.x - mx) * f
+        S.tf.y = my + (T.tfStart.y - my) * f
+        S.tf.sc = sc; applyTf()
+      }
+    }, { passive: false })
+
+    cvs.addEventListener('touchend', e => {
+      if (T.dragNode) { if (T.dragNode.mv) { save(); render() }; T.dragNode = null }
+      T.panStart = null; T.tfStart = null; T.pinchDist = null
+    })
+    $('zi').addEventListener('click', () => zBy(1.2))
+    $('zo').addEventListener('click', () => zBy(.83))
+    function zBy(f) { const r = cvs.getBoundingClientRect(), cx = r.width / 2, cy = r.height / 2; S.tf.x = cx + (S.tf.x - cx) * f; S.tf.y = cy + (S.tf.y - cy) * f; S.tf.sc = Math.max(.15, Math.min(3, S.tf.sc * f)); applyTf() }
+    $('rv').addEventListener('click', centre)
+    function centre() { const r = cvs.getBoundingClientRect(); S.tf.x = r.width / 2; S.tf.y = r.height / 2; S.tf.sc = 1; applyTf() }
+
+    // SELECT & PANEL
+    function selNode(id) { S.selId = id; renderNodes(); updPanel(id); $('pn').classList.add('open') }
+    function updPanel(id) {
+      const n = S.nodes[id]; if (!n) return
+      const av = $('pa'); av.className = n.gender === 'male' ? 'm' : n.gender === 'female' ? 'f' : 'u'; av.textContent = ini(n.fullName)
+      $('ptit').textContent = n.fullName || '(No name)'
+      $('pnk').textContent = n.nickname ? `"${n.nickname}"` : ''; $('pnk').style.display = n.nickname ? 'block' : 'none'
+      const bg = $('pbg'); bg.textContent = n.label || (n.isRoot ? 'You (Root)' : ''); bg.style.display = (n.label || n.isRoot) ? 'inline-block' : 'none'
+      const sv = (eid, val) => { const el = $(eid); el.textContent = val || '--'; el.className = 'prv' + (val ? '' : ' pre') }
+      sv('pph', n.phone); sv('pad2', n.address)
+      sv('psp', n.spouseId ? S.nodes[n.spouseId]?.fullName : null)
+      sv('ppar', n.parentIds.map(p => S.nodes[p]?.fullName || '?').join(', ') || null)
+      sv('pch', n.childrenIds.map(c => S.nodes[c]?.fullName || '?').join(', ') || null)
+    }
+    function closePanel() { S.selId = null; $('pn').classList.remove('open'); renderNodes() }
+    $('pc').addEventListener('click', closePanel)
+    $('ped').addEventListener('click', () => { if (S.selId) openModal('edit', S.selId) })
+    $('pdl').addEventListener('click', () => { if (!S.selId) return; const n = S.nodes[S.selId]; confirm2(`Remove "${n?.fullName || 'this person'}"?`, 'This will remove them and their connections.', () => delNode(S.selId)) })
+
+    // MODAL
+    function openModal(mode, nodeId = null, parentId = null, type = null) {
+      S.modal = { mode, nodeId, parentId, type }
+      const t = { edit: 'Edit Person', parent: 'Add Parent', child: 'Add Child / Descendant', spouse: 'Add Spouse / Partner', sibling: 'Add Sibling' }
+      $('mt').textContent = t[mode === 'edit' ? 'edit' : type] || 'Add Person'
+      $('fn').value = ''; $('fk').value = ''; $('fg').value = 'unknown'; $('fl').value = ''; $('flc').value = ''; $('flc').style.display = 'none'; $('fp').value = ''; $('fa').value = ''
+      if (mode === 'edit' && nodeId) {
+        const n = S.nodes[nodeId]; if (n) {
+          $('fn').value = n.fullName; $('fk').value = n.nickname; $('fg').value = n.gender; $('fp').value = n.phone; $('fa').value = n.address
+          const opts = [...$('fl').options].map(o => o.value)
+          if (opts.includes(n.label)) $('fl').value = n.label
+          else if (n.label) { $('fl').value = '__c'; $('flc').value = n.label; $('flc').style.display = 'block' }
+        }
+      }
+      $('mo').classList.add('open'); $('fn').focus()
+    }
+    function closeModal() { S.modal = null; $('mo').classList.remove('open') }
+    function getForm() { const ls = $('fl').value, label = ls === '__c' ? $('flc').value : ls; return { fullName: $('fn').value.trim(), nickname: $('fk').value.trim(), gender: $('fg').value, label, phone: $('fp').value.trim(), address: $('fa').value.trim() } }
+    $('mc').addEventListener('click', closeModal)
+    $('mca').addEventListener('click', closeModal)
+    $('mo').addEventListener('click', e => { if (e.target === $('mo')) closeModal() })
+    $('msv').addEventListener('click', () => {
+      const d = getForm()
+      if (!d.fullName) { $('fn').style.borderColor = 'var(--red)'; $('fn').focus(); return }
+      $('fn').style.borderColor = ''
+      const m = S.modal; if (!m) return
+      if (m.mode === 'add') {
+        if (m.type === 'sibling') addSiblingNode(m.parentId, d)
+        else addNode(m.parentId, m.type, d)
+      } else editNode(m.nodeId, d)
+      closeModal()
+    })
+    $('fl').addEventListener('change', () => { $('flc').style.display = $('fl').value === '__c' ? 'block' : 'none'; if ($('fl').value === '__c') $('flc').focus() })
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Escape') return
+      if ($('co').classList.contains('open')) { $('co').classList.remove('open'); S.confirmCb = null }
+      else if ($('mo').classList.contains('open')) closeModal()
+      else closePanel()
+    })
+
+    // SEARCH
+    $('s').addEventListener('input', function () {
+      const q = this.value.trim().toLowerCase()
+      renderConns(); renderNodes()
+      const res = $('sr')
+      if (!q) { res.classList.remove('open'); return }
+      const matches = Object.values(S.nodes).filter(n => mn(n, q))
+      if (!matches.length) { res.innerHTML = '<div class="sri" style="color:var(--ink-faint)">No results</div>'; res.classList.add('open'); return }
+      res.innerHTML = matches.slice(0, 8).map(n => `<div class="sri" data-id="${n.id}"><strong>${n.fullName || '(No name)'}</strong>${n.nickname ? ` &middot; "${n.nickname}"` : ''}${n.label ? ` <span style="color:var(--gold-lt);font-size:11px">${n.label}</span>` : ''}</div>`).join('')
+      res.classList.add('open')
+      res.querySelectorAll('.sri[data-id]').forEach(el => { el.addEventListener('click', () => { const node = S.nodes[el.dataset.id]; if (!node) return; $('s').value = ''; res.classList.remove('open'); renderConns(); renderNodes(); panTo(node); selNode(node.id) }) })
+    })
+    document.addEventListener('click', e => { if (!e.target.closest('#sw')) $('sr').classList.remove('open') })
+    function panTo(node) { const r = cvs.getBoundingClientRect(); S.tf.x = r.width / 2 - node.x * S.tf.sc; S.tf.y = r.height / 2 - node.y * S.tf.sc; applyTf() }
+
+    // EXPORT/IMPORT
+    $('exp').addEventListener('click', () => {
+      const blob = new Blob([JSON.stringify({ version: '1.0', exportedAt: new Date().toISOString(), rootNodeId: S.rootId, nodes: S.nodes }, null, 2)], { type: 'application/json' })
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `silsilah-${new Date().toISOString().slice(0, 10)}.json`; a.click(); URL.revokeObjectURL(a.href); toast('Family tree exported!')
+    })
+    $('imp').addEventListener('change', function () {
+      const file = this.files[0]; if (!file) return
+      const reader = new FileReader()
+      reader.onload = e => {
+        try {
+          const d = JSON.parse(e.target.result)
+          if (!d.nodes || !d.rootNodeId) throw new Error()
+          const count = Object.keys(d.nodes).length
+          confirm2(`Import ${count} people?`, 'This will replace your current tree. Export first to keep a backup.', () => { S.nodes = d.nodes; S.rootId = d.rootNodeId; S.selId = null; closePanel(); save(); render(); centre(); toast(`Imported ${count} people!`) })
+        } catch (e) { toast('Invalid file. Use a Silsilah JSON export.') }
+      }
+      reader.readAsText(file); this.value = ''
+    })
+
+    // LINK EXISTING PICKER
+    let LX = { type: null, nodeId: null }
+    function openLinkPicker(type, nodeId) {
+      LX = { type, nodeId }
+      const labels = { parent: 'Add / Link Parent', child: 'Add / Link Child', spouse: 'Add / Link Spouse', sibling: 'Add / Link Sibling' }
+      $('lxt').textContent = labels[type] || 'Link Person'
+      $('lxsi').value = ''
+      renderLxList('')
+      $('lx').classList.add('open')
+      $('lxsi').focus()
+    }
+    function closeLinkPicker() { $('lx').classList.remove('open') }
+    $('lxc').addEventListener('click', closeLinkPicker)
+    $('lx').addEventListener('click', e => { if (e.target === $('lx')) closeLinkPicker() })
+    $('lxnew').addEventListener('click', () => { closeLinkPicker(); openModal('add', null, LX.nodeId, LX.type) })
+    $('lxsi').addEventListener('input', function () { renderLxList(this.value.trim().toLowerCase()) })
+    function renderLxList(q) {
+      const from = S.nodes[LX.nodeId]; if (!from) return
+      const avClass = g => g === 'male' ? 'm' : g === 'female' ? 'f' : 'u'
+      const avBg = g => g === 'male' ? 'linear-gradient(135deg,#4a7fb5,#2c5f8a)' : g === 'female' ? 'linear-gradient(135deg,#c0607a,#8a3050)' : 'linear-gradient(135deg,#7a7060,#554c3a)'
+      let candidates = Object.values(S.nodes).filter(n => {
+        if (n.id === LX.nodeId) return false
+        if (LX.type === 'parent' && from.parentIds.includes(n.id)) return false
+        if (LX.type === 'child' && from.childrenIds.includes(n.id)) return false
+        if (LX.type === 'spouse' && (from.spouseId || n.spouseId)) return false
+        if (LX.type === 'sibling') {
+          // must share a parent that from also has
+          return from.parentIds.length > 0
+        }
+        return true
+      })
+      if (q) candidates = candidates.filter(n => mn(n, q))
+      const list = $('lxl')
+      if (!candidates.length) { list.innerHTML = '<div style="padding:16px 22px;color:var(--ink-faint);font-size:13px">No eligible people found</div>'; return }
+      list.innerHTML = candidates.slice(0, 30).map(n => `
+    <div class="lxi" data-id="${n.id}">
+      <div class="lxiav" style="background:${avBg(n.gender)}">${ini(n.fullName)}</div>
+      <div><div class="lxin">${n.fullName || '(No name)'}</div><div class="lxis">${n.nickname ? `"${n.nickname}" · ` : ''}${n.label || ''}</div></div>
+    </div>`).join('')
+      list.querySelectorAll('.lxi').forEach(el => { el.addEventListener('click', () => { linkExisting(LX.type, LX.nodeId, el.dataset.id); closeLinkPicker() }) })
+    }
+    function linkSiblings(a, b) {
+      if (!Array.isArray(a.siblingIds)) a.siblingIds = []
+      if (!Array.isArray(b.siblingIds)) b.siblingIds = []
+      if (!a.siblingIds.includes(b.id)) a.siblingIds.push(b.id)
+      if (!b.siblingIds.includes(a.id)) b.siblingIds.push(a.id)
+    }
+
+    function linkExisting(type, fromId, targetId) {
+      const from = S.nodes[fromId], target = S.nodes[targetId]
+      if (!from || !target) return
+      if (type === 'parent') {
+        if (from.parentIds.length >= 2) { toast('Max 2 parents'); return }
+        from.parentIds.push(targetId)
+        if (!target.childrenIds.includes(fromId)) target.childrenIds.push(fromId)
+        if (from.parentIds.length === 2) { const ex = S.nodes[from.parentIds[0]]; if (ex) ex.x = from.x - GX / 2; target.x = from.x + GX / 2; target.y = from.y - GY }
+        else { target.x = from.x; target.y = from.y - GY }
+      } else if (type === 'child') {
+        if (!from.childrenIds.includes(targetId)) from.childrenIds.push(targetId)
+        if (!target.parentIds.includes(fromId)) target.parentIds.push(fromId)
+        reposChildren(from)
+      } else if (type === 'spouse') {
+        if (from.spouseId || target.spouseId) { toast('One or both already have a partner'); return }
+        from.spouseId = targetId; target.spouseId = fromId
+        target.x = from.x + CW + 80; target.y = from.y
+      } else if (type === 'sibling') {
+        // Share parents
+        from.parentIds.forEach(pid => {
+          const par = S.nodes[pid]; if (!par) return
+          if (!par.childrenIds.includes(targetId)) par.childrenIds.push(targetId)
+          if (!target.parentIds.includes(pid)) target.parentIds.push(pid)
+        })
+        // Mark explicit sibling link so line is drawn even if no shared parent
+        linkSiblings(from, target)
+        if (from.parentIds[0]) reposChildren(S.nodes[from.parentIds[0]])
+      }
+      save(); render(); toast('Linked!')
+    }
+
+    // ADD SIBLING (create new)
+    function addSiblingNode(fromId, fd) {
+      const from = S.nodes[fromId]; if (!from || !from.parentIds.length) { toast('Node needs a parent to add sibling'); return }
+      const par = S.nodes[from.parentIds[0]]; if (!par) return
+      const x = from.x + (CW + 40), y = from.y
+      const node = mkNode({ ...fd, x, y }); S.nodes[node.id] = node
+      par.childrenIds.push(node.id); node.parentIds.push(par.id)
+      if (from.parentIds.length > 1) { const par2 = S.nodes[from.parentIds[1]]; if (par2 && !par2.childrenIds.includes(node.id)) { par2.childrenIds.push(node.id); node.parentIds.push(par2.id) } }
+      // Record sibling links to all existing siblings in this family
+      par.childrenIds.forEach(cid => { const sib = S.nodes[cid]; if (sib && sib.id !== node.id) linkSiblings(node, sib) })
+      reposChildren(par)
+      save(); render(); selNode(node.id); toast('Sibling added!')
+    }
+
+    let tt; function toast(m) { const el = $('toast'); el.textContent = m; el.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => el.classList.remove('show'), 2800) }
+
+    // INIT
+    function init() { const ok = load(); if (!ok || !Object.keys(S.nodes).length) initRoot(); centre(); render() }
+    init()
+
+    // PWA
+    if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('silsilah-sw.js').catch(() => { }) }) }
+
+  </script>
 </body>
 
 </html>
