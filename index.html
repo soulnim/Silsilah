@@ -699,21 +699,6 @@
       color: #fff
     }
 
-    .ndt {
-      background: var(--gold-dim);
-      color: var(--gold);
-      border: 1px solid rgba(200, 150, 62, .3);
-      width: auto;
-      padding: 0 8px;
-      font-weight: 700;
-      letter-spacing: .02em;
-    }
-
-    .ndt:hover {
-      background: var(--gold);
-      color: #1a1200;
-    }
-
     .dt {
       position: absolute;
       left: 50%;
@@ -1647,7 +1632,8 @@
           <div class="wgic">📱</div>
           <div>
             <div class="wgit">Mobile</div>
-            <div class="wgid">Tap to select · Double-tap for details · Pinch to zoom</div>
+            <div class="wgid">Tap to select · Double-tap for details · Use <strong style="color:var(--gold)">+</strong>
+              to add rels</div>
           </div>
         </div>
       </div>
@@ -1999,7 +1985,6 @@
     <div class="nk">${node.nickname ? `"${node.nickname}"` : ''}  </div>
     <div class="nd">${node.phone || node.address || ''}</div>
     <div class="na">
-      <button class="nab ndt" title="View Details">Details</button>
       <button class="nab ned" title="Edit">&#9998;</button>
       <button class="nab ndl" title="Delete">&#128465;</button>
     </div>
@@ -2010,15 +1995,13 @@
 
     function bindEl(el, node) {
       el.querySelector('.nc').addEventListener('mousedown', e => { if (e.target.closest('button')) return; e.stopPropagation(); S.drag = { id: node.id, ox: e.clientX, oy: e.clientY, nx: node.x, ny: node.y, mv: false } })
-      // Single click/tap on the card: just SELECT the node (shows + buttons)
       el.querySelector('.nc').addEventListener('click', e => {
         if (e.target.closest('button')) return
         if (S.drag && S.drag.mv) return
-        if (S.lastTouchId === node.id) return // handled by touch logic
+        if (S.lastTouchId === node.id) return
         selOnly(node.id)
       })
-      // "Details" button specifically opens the panel
-      el.querySelector('.ndt').addEventListener('click', e => {
+      el.querySelector('.nc').addEventListener('dblclick', e => {
         e.stopPropagation()
         selNode(node.id)
       })
@@ -2052,6 +2035,7 @@
       if (e.touches.length === 1) {
         const t = e.touches[0]
         const el = document.elementFromPoint(t.clientX, t.clientY)
+        if (el && el.closest('button')) return // Let native click happen
         const nc = el && el.closest('.nc')
         const nodeEl = nc && nc.closest('.no')
         if (nodeEl && !el.closest('button')) {
