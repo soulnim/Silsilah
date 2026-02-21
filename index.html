@@ -9,7 +9,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Circles">
   <link rel="manifest" href="circles.webmanifest">
-  <title>Circles — Family Heritage</title>
+  <title>Circles — Your World, Mapped</title>
   <link
     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lato:wght@300;400;700&display=swap"
     rel="stylesheet">
@@ -23,7 +23,10 @@
     }
 
     :root {
-      --bg: var(--bg);
+      --bg: #0d0c08;
+      --tb-bg: rgba(13, 12, 8, .92);
+      --bar-bg: rgba(13, 12, 8, .96);
+      --surface-a: rgba(26, 24, 18, .92);
       --surface: #1a1812;
       --border: #2e2b20;
       --gold: #c8963e;
@@ -41,6 +44,25 @@
       --r: 10px;
       --sh: 0 4px 24px rgba(0, 0, 0, .18), 0 1px 4px rgba(0, 0, 0, .1);
       --sh2: 0 8px 40px rgba(0, 0, 0, .28), 0 2px 8px rgba(0, 0, 0, .14);
+    }
+
+    [data-theme="light"] {
+      --bg: #f4efe2;
+      --tb-bg: rgba(244, 239, 226, .95);
+      --bar-bg: rgba(244, 239, 226, .98);
+      --surface-a: rgba(255, 252, 245, .97);
+      --surface: #fffcf5;
+      --border: #d8cead;
+      --gold: #a0722e;
+      --gold-lt: #c08a3a;
+      --gold-dim: rgba(160, 114, 46, .12);
+      --cream: #1e1a0f;
+      --paper: #ffffff;
+      --ink: #1e1a0f;
+      --ink-soft: #4a4232;
+      --ink-faint: #7a6e52;
+      --sh: 0 4px 24px rgba(0, 0, 0, .08), 0 1px 4px rgba(0, 0, 0, .05);
+      --sh2: 0 8px 40px rgba(0, 0, 0, .12), 0 2px 8px rgba(0, 0, 0, .07);
     }
 
     html,
@@ -65,7 +87,7 @@
       align-items: center;
       gap: 12px;
       padding: 0 20px;
-      background: rgba(13, 12, 8, .92);
+      background: var(--tb-bg);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border)
     }
@@ -1510,9 +1532,7 @@
       bottom: 24px;
       right: 24px;
       z-index: 89;
-      background: rgba(26, 24, 18, .92);
-      border: 1px solid var(--border);
-      border-radius: 10px;
+      background: var(--surface-a);
       padding: 10px 14px;
       font-size: 11px;
       color: var(--ink-faint);
@@ -1549,7 +1569,7 @@
       align-items: center;
       justify-content: center;
       gap: 0;
-      background: rgba(13, 12, 8, .96);
+      background: var(--bar-bg);
       border-bottom: 1px solid var(--border);
       height: 44px;
     }
@@ -1729,14 +1749,7 @@
       height: 68px;
       border-radius: 50%;
       border: 1.5px solid rgba(200, 150, 62, .4);
-      background: rgba(26, 24, 18, .92);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      user-select: none;
-      transition: transform .32s cubic-bezier(.34, 1.56, .64, 1), opacity .28s ease, box-shadow .2s;
+      background: var(--surface-a);
       z-index: 3;
       backdrop-filter: blur(8px);
     }
@@ -2384,6 +2397,29 @@
       gap: 8px;
     }
 
+    #crv {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--cream);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: var(--sh);
+      transition: all .2s;
+      letter-spacing: .02em;
+      font-family: 'Lato', sans-serif;
+    }
+
+    #crv:hover {
+      border-color: var(--gold);
+      color: var(--gold)
+    }
+
     #circlesCC.active {
       display: flex;
     }
@@ -2413,13 +2449,14 @@
     <div id="logo"><span style="font-size:22px">&#127795;</span>
       <div>
         <div id="lt">Circles</div>
-        <div id="ls">Family Heritage</div>
+        <div id="ls">Your World, Mapped</div>
       </div>
     </div>
     <div id="sw"><span id="si">&#128269;</span><input id="s" type="text" placeholder="Search..." autocomplete="off">
       <div id="sr"></div>
     </div>
     <div id="tba">
+      <button class="tbb" id="thmBtn" title="Toggle light/dark mode">🌙</button>
       <button class="tbb" id="hlp">&#10067; Help</button>
       <label class="tbb" style="cursor:pointer">&#11014; Import<input type="file" id="imp" accept=".json"
           style="display:none"></label>
@@ -2440,9 +2477,10 @@
     <div class="msw">
       <div class="msw-wrap">
         <span class="msw-icon">&#128269;</span>
-        <input id="s2" type="text" placeholder="Search heritage..." autocomplete="off">
+        <input id="s2" type="text" placeholder="Search..." autocomplete="off">
       </div>
     </div>
+    <button class="mdi" id="mthmBtn"><span class="mdi-icon">🌙</span> Toggle Theme</button>
     <button class="mdi" id="mhlp"><span class="mdi-icon">&#10067;</span> Help</button>
     <label class="mdi" style="cursor:pointer"><span class="mdi-icon">&#11014;</span> Import<input type="file" id="mimp"
         accept=".json" style="display:none"></label>
@@ -2606,6 +2644,7 @@
 
   <!-- CIRCLES ZOOM CONTROLS -->
   <div id="circlesCC">
+    <button id="crv">&#8984; Centre View</button>
     <div id="czc" style="display:flex;gap:6px"><button class="zb" id="czi">+</button><button class="zb"
         id="czo">&minus;</button></div>
   </div>
@@ -2616,51 +2655,54 @@
       <div id="wt">
         <div id="wi">🌿</div>
         <div id="wtt">Welcome to Circles</div>
-        <div id="ws">Your personal family heritage tree — build, explore, and preserve your family history.</div>
+        <div id="ws">Map your world — family roots, old friends, and every circle that shaped you. Private, offline, and
+          always yours.</div>
       </div>
       <div id="wg">
         <div class="wgi">
+          <div class="wgic">🌳</div>
+          <div>
+            <div class="wgit">Family Tree</div>
+            <div class="wgid">Add parents, children, spouses &amp; siblings. The tree auto-lays out — no dragging
+              needed.</div>
+          </div>
+        </div>
+        <div class="wgi">
+          <div class="wgic">🔵</div>
+          <div>
+            <div class="wgit">Circles</div>
+            <div class="wgid">Group people by life chapter — school, work, neighbourhood, and more. Drag bubbles to
+              arrange.</div>
+          </div>
+        </div>
+        <div class="wgi">
           <div class="wgic">👆</div>
           <div>
-            <div class="wgit">Select</div>
-            <div class="wgid">Click any card to select it and see details</div>
+            <div class="wgit">Select &amp; Inspect</div>
+            <div class="wgid">Click any card to select it; double-click (or double-tap) to open the detail panel.</div>
           </div>
         </div>
         <div class="wgi">
           <div class="wgic">➕</div>
           <div>
-            <div class="wgit">Add Members</div>
-            <div class="wgid">Hover a card — use <strong style="color:var(--gold)">+</strong> to add parents or children
-            </div>
-          </div>
-        </div>
-        <div class="wgi">
-          <div class="wgic">💍</div>
-          <div>
-            <div class="wgit">Spouse</div>
-            <div class="wgid">The ring button links a spouse or partner</div>
-          </div>
-        </div>
-        <div class="wgi">
-          <div class="wgic">⇔</div>
-          <div>
-            <div class="wgit">Siblings</div>
-            <div class="wgid">The ⇔ button appears once a node has a parent</div>
+            <div class="wgit">Add Relatives</div>
+            <div class="wgid">Hover a family card — use <strong style="color:var(--gold)">+</strong> buttons to add
+              parents or children.</div>
           </div>
         </div>
         <div class="wgi">
           <div class="wgic">🔗</div>
           <div>
             <div class="wgit">Link Existing</div>
-            <div class="wgid">Pick an existing person instead of creating new</div>
+            <div class="wgid">Pick an existing person from the tree instead of creating a duplicate.</div>
           </div>
         </div>
         <div class="wgi">
-          <div class="wgic">📱</div>
+          <div class="wgic">⊕</div>
           <div>
-            <div class="wgit">Mobile</div>
-            <div class="wgid">Tap to select · Double-tap for details · Use <strong style="color:var(--gold)">+</strong>
-              to add rels</div>
+            <div class="wgit">Centre View</div>
+            <div class="wgid">Use the Centre View button (bottom-left) to reset the canvas pan &amp; zoom at any time.
+            </div>
           </div>
         </div>
       </div>
@@ -2817,28 +2859,28 @@
   <script>
     const S = { nodes: {}, rootId: null, selId: null, tf: { x: 0, y: 0, sc: 1 }, modal: null, drag: null, pan: false, po: null, confirmCb: null, lastTouchId: null }
     const uid = () => {
-  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
-  const c = window.crypto || window.msCrypto;
-  if (c && c.getRandomValues) {
-    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, ch =>
-      (ch ^ c.getRandomValues(new Uint8Array(1))[0] & 15 >> ch / 4).toString(16)
-    );
-  }
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, ch => {
-    const r = Math.random() * 16 | 0, v = ch == 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-};
+      if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID();
+      const c = window.crypto || window.msCrypto;
+      if (c && c.getRandomValues) {
+        return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, ch =>
+          (ch ^ c.getRandomValues(new Uint8Array(1))[0] & 15 >> ch / 4).toString(16)
+        );
+      }
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, ch => {
+        const r = Math.random() * 16 | 0, v = ch == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    };
     const $ = id => document.getElementById(id)
 
-const mdd = $('mdd'), mbtn = $('mbtn')
-const tabFamily = $('tabFamily'), tabCircles = $('tabCircles')
-const circlesCanvas = $('circlesCanvas')
-const addGroupBtn = $('addGroupBtn')
-const circlesCC = $('circlesCC')
-const cWorld = $('circlesWorld')
-const cSvgG = $('csg')
-const groupCtxMenu = $('groupCtxMenu')
+    const mdd = $('mdd'), mbtn = $('mbtn')
+    const tabFamily = $('tabFamily'), tabCircles = $('tabCircles')
+    const circlesCanvas = $('circlesCanvas')
+    const addGroupBtn = $('addGroupBtn')
+    const circlesCC = $('circlesCC')
+    const cWorld = $('circlesWorld')
+    const cSvgG = $('csg')
+    const groupCtxMenu = $('groupCtxMenu')
     const CW = 200, CH = 138, GY = 220, GX = 240
 
     function ini(n) { if (!n) return '?'; return n.trim().split(/\s+/).slice(0, 2).map(w => w[0].toUpperCase()).join('') }
@@ -2858,6 +2900,89 @@ const groupCtxMenu = $('groupCtxMenu')
     function initRoot() { const r = mkNode({ fullName: 'You', isRoot: true, x: 0, y: 0 }); S.nodes[r.id] = r; S.rootId = r.id; save() }
     function reposChildren(p) { const ids = p.childrenIds; if (!ids.length) return; const tw = (ids.length - 1) * GX; ids.forEach((cid, i) => { if (S.nodes[cid]) S.nodes[cid].x = p.x - tw / 2 + i * GX }) }
 
+    // ── AUTO-LAYOUT: assigns clean positions to every node in the family tree ──
+    function layoutTree() {
+      const nodes = S.nodes
+      const keys = Object.keys(nodes)
+      if (!keys.length) return
+
+      // BFS from root (or first node) to assign generation rows
+      const startId = S.rootId || keys[0]
+      const gen = {}   // nodeId → integer row (0=root, +1=children, -1=parents)
+      const queue = [[startId, 0]]
+      while (queue.length) {
+        const [nid, g] = queue.shift()
+        if (gen[nid] !== undefined) continue
+        gen[nid] = g
+        const n = nodes[nid]; if (!n) continue
+          ; (n.parentIds || []).forEach(pid => { if (gen[pid] === undefined) queue.push([pid, g - 1]) })
+          ; (n.childrenIds || []).forEach(cid => { if (gen[cid] === undefined) queue.push([cid, g + 1]) })
+        if (n.spouseId && gen[n.spouseId] === undefined) queue.push([n.spouseId, g])
+          ; (n.siblingIds || []).forEach(sid => { if (gen[sid] === undefined) queue.push([sid, g]) })
+      }
+      // Include any disconnected nodes
+      keys.forEach(id => { if (gen[id] === undefined) gen[id] = 0 })
+
+      // Group ids by generation
+      const byGen = {}
+      Object.entries(gen).forEach(([id, g]) => { if (!byGen[g]) byGen[g] = []; byGen[g].push(id) })
+
+      // Within each generation, try to order nodes so spouses are adjacent and
+      // children roughly centre under their parents. Simple heuristic: sort by
+      // average x of parents (fall back to sibling order).
+      // We do two passes so parent positions are established before child ordering.
+      const HGAP = CW + 60   // 260 px horizontal gap between card centres
+      const VGAP = GY        // 220 px vertical gap between generations
+
+      // First pass: assign naive positions top-to-bottom
+      const genNums = Object.keys(byGen).map(Number).sort((a, b) => a - b)
+      genNums.forEach(g => {
+        const ids = byGen[g]
+        // Sort: spouses adjacent to each other, siblings together
+        // Simple sort: put spouses next to each other
+        const ordered = sortGeneration(ids, nodes)
+        const total = ordered.length
+        ordered.forEach((id, i) => {
+          if (!nodes[id]) return
+          nodes[id].x = (i - (total - 1) / 2) * HGAP
+          nodes[id].y = g * VGAP
+        })
+      })
+
+      // Second pass (single): nudge children to centre under their parent group
+      genNums.filter(g => g > Math.min(...genNums)).forEach(g => {
+        const ids = byGen[g]
+        const parentGroups = {}
+        ids.forEach(id => {
+          const n = nodes[id]; if (!n) return
+          const parentKey = [...(n.parentIds || [])].sort().join('|') || '__none'
+          if (!parentGroups[parentKey]) parentGroups[parentKey] = { ids: [], parentIds: n.parentIds || [] }
+          parentGroups[parentKey].ids.push(id)
+        })
+        Object.values(parentGroups).forEach(({ ids: gids, parentIds: pids }) => {
+          if (!pids.length) return
+          const parentCx = pids.reduce((s, pid) => s + (nodes[pid] ? nodes[pid].x : 0), 0) / pids.length
+          const groupW = (gids.length - 1) * HGAP
+          gids.forEach((id, i) => {
+            if (nodes[id]) nodes[id].x = parentCx - groupW / 2 + i * HGAP
+          })
+        })
+      })
+    }
+
+    function sortGeneration(ids, nodes) {
+      // Group spouses together; otherwise keep original order
+      const placed = new Set()
+      const result = []
+      ids.forEach(id => {
+        if (placed.has(id)) return
+        result.push(id); placed.add(id)
+        const sp = nodes[id]?.spouseId
+        if (sp && ids.includes(sp) && !placed.has(sp)) { result.push(sp); placed.add(sp) }
+      })
+      return result
+    }
+
     // ADD/EDIT/DELETE
     function addNode(fromId, type, fd) {
       const from = S.nodes[fromId]; if (!from) return
@@ -2874,7 +2999,7 @@ const groupCtxMenu = $('groupCtxMenu')
         if (from.spouseId && S.nodes[from.spouseId]) { const sp = S.nodes[from.spouseId]; if (!sp.childrenIds.includes(node.id)) { sp.childrenIds.push(node.id); node.parentIds.push(from.spouseId) } }
         reposChildren(from)
       }
-      save(); render(); selNode(node.id); toast('Added ' + (node.fullName || 'person'))
+      save(); layoutTree(); render(); selNode(node.id); toast('Added ' + (node.fullName || 'person'))
     }
     function editNode(id, fd) { if (!S.nodes[id]) return; const n = S.nodes[id]; n.fullName = fd.fullName; n.nickname = fd.nickname; n.label = fd.label; n.gender = fd.gender; n.phone = fd.phone; n.address = fd.address; save(); render(); if (S.selId === id) updPanel(id); toast('Changes saved') }
     function delNode(id) {
@@ -2886,7 +3011,7 @@ const groupCtxMenu = $('groupCtxMenu')
       if (id === S.rootId) { const rem = Object.keys(S.nodes).filter(k => k !== id); S.rootId = rem[0] || null; if (S.rootId) S.nodes[S.rootId].isRoot = true }
       delete S.nodes[id]
       if (S.selId === id) { S.selId = null; closePanel() }
-      save(); render(); toast('Person removed')
+      save(); layoutTree(); render(); toast('Person removed')
     }
 
     // RENDER
@@ -3042,7 +3167,8 @@ const groupCtxMenu = $('groupCtxMenu')
     }
 
     function bindEl(el, node) {
-      el.querySelector('.nc').addEventListener('mousedown', e => { if (e.target.closest('button')) return; e.stopPropagation(); S.drag = { id: node.id, ox: e.clientX, oy: e.clientY, nx: node.x, ny: node.y, mv: false } })
+      // Family tree nodes are NOT draggable — layout is automatic.
+      // Clicking/double-clicking selects the node.
       el.querySelector('.nc').addEventListener('click', e => {
         if (e.target.closest('button')) return
         if (S.drag && S.drag.mv) return
@@ -3088,7 +3214,10 @@ const groupCtxMenu = $('groupCtxMenu')
         const nodeEl = nc && nc.closest('.no')
         if (nodeEl && !el.closest('button')) {
           const nid = nodeEl.dataset.id; const node = S.nodes[nid]
-          if (node) { T.dragNode = { id: nid, ox: t.clientX, oy: t.clientY, nx: node.x, ny: node.y, mv: false }; return }
+          // Family tree nodes are not draggable — treat as tap only
+          if (node && S.mode !== 'family') {
+            T.dragNode = { id: nid, ox: t.clientX, oy: t.clientY, nx: node.x, ny: node.y, mv: false }; return
+          }
         }
         T.panStart = { x: t.clientX, y: t.clientY, tx: S.tf.x, ty: S.tf.y }; T.tfStart = null
       } else if (e.touches.length === 2) {
@@ -3327,7 +3456,7 @@ const groupCtxMenu = $('groupCtxMenu')
         linkSiblings(from, target)
         if (from.parentIds[0]) reposChildren(S.nodes[from.parentIds[0]])
       }
-      save(); render(); toast('Linked!')
+      save(); layoutTree(); render(); toast('Linked!')
     }
 
     // ADD SIBLING (create new)
@@ -3341,7 +3470,7 @@ const groupCtxMenu = $('groupCtxMenu')
       // Record sibling links to all existing siblings in this family
       par.childrenIds.forEach(cid => { const sib = S.nodes[cid]; if (sib && sib.id !== node.id) linkSiblings(node, sib) })
       reposChildren(par)
-      save(); render(); selNode(node.id); toast('Sibling added!')
+      save(); layoutTree(); render(); selNode(node.id); toast('Sibling added!')
     }
 
     let tt; function toast(m) { const el = $('toast'); el.textContent = m; el.classList.add('show'); clearTimeout(tt); tt = setTimeout(() => el.classList.remove('show'), 2800) }
@@ -3478,11 +3607,20 @@ const groupCtxMenu = $('groupCtxMenu')
 
       groups.forEach((g, i) => {
         const angle = (2 * Math.PI * i / Math.max(total, 1)) - Math.PI / 2
-        const gx = cx + R * Math.cos(angle)
-        const gy = cy + R * Math.sin(angle)
+        // Use stored position (from drag) or compute from orbit
+        const gx = (g.cx !== undefined) ? cx + g.cx : cx + R * Math.cos(angle)
+        const gy = (g.cy !== undefined) ? cy + g.cy : cy + R * Math.sin(angle)
+
+        // Initialise stored offset on first render
+        if (g.cx === undefined) { g.cx = R * Math.cos(angle); g.cy = R * Math.sin(angle) }
 
         // SVG line: user → group
-        drawCLine(cSvgG, cx, cy, gx, gy, 'c-line')
+        const lineEl = document.createElementNS('http://www.w3.org/2000/svg', 'line')
+        lineEl.setAttribute('x1', cx); lineEl.setAttribute('y1', cy)
+        lineEl.setAttribute('x2', gx); lineEl.setAttribute('y2', gy)
+        lineEl.setAttribute('class', 'c-line')
+        lineEl.dataset.lgid = g.id
+        cSvgG.appendChild(lineEl)
 
         const el = document.createElement('div')
         el.className = 'c-group' + (expandedGroupId === g.id ? ' expanded' : '')
@@ -3499,23 +3637,74 @@ const groupCtxMenu = $('groupCtxMenu')
           <span class="c-group-name" style="color:${g.color}">${g.name}${yrLabel}</span>
           <span class="c-group-count" style="background:${hexAlpha(g.color, 0.2)};color:${g.color}">${totalM} people</span>`
 
-        // Long-press / right-click → context menu
-        let pressTimer
+        // ── Group events: context menu, drag, click ──
         el.addEventListener('contextmenu', e => { e.preventDefault(); openGroupCtx(g.id, e.clientX, e.clientY) })
-        el.addEventListener('touchstart', () => { pressTimer = setTimeout(() => openGroupCtx(g.id, null, null), 600) }, { passive: true })
-        el.addEventListener('touchend', () => clearTimeout(pressTimer))
-        el.addEventListener('touchmove', () => clearTimeout(pressTimer))
 
-        // Click → toggle expand sub-groups
+        // Mouse drag + click
+        let _gDragged = false
+        el.addEventListener('mousedown', e => {
+          if (e.button !== 0 || e.target.closest('.c-subgroup')) return
+          e.stopPropagation()
+          const startX = e.clientX, startY = e.clientY
+          const origCx = g.cx, origCy = g.cy
+          _gDragged = false
+          function onMove(me) {
+            const dx = (me.clientX - startX) / CCtf.sc
+            const dy = (me.clientY - startY) / CCtf.sc
+            if (Math.abs(dx) > 4 || Math.abs(dy) > 4) _gDragged = true
+            if (!_gDragged) return
+            g.cx = origCx + dx; g.cy = origCy + dy
+            const ngx = cx + g.cx, ngy = cy + g.cy
+            el.style.left = ngx + 'px'; el.style.top = ngy + 'px'
+            const ln = cSvgG.querySelector(`[data-lgid="${g.id}"]`)
+            if (ln) { ln.setAttribute('x2', ngx); ln.setAttribute('y2', ngy) }
+          }
+          function onUp() {
+            document.removeEventListener('mousemove', onMove)
+            document.removeEventListener('mouseup', onUp)
+            if (_gDragged) { save(); renderCirclesView() }
+          }
+          document.addEventListener('mousemove', onMove)
+          document.addEventListener('mouseup', onUp)
+        })
         el.addEventListener('click', e => {
           if (e.target.closest('.c-subgroup')) return
+          if (_gDragged) { _gDragged = false; return }
           expandedGroupId = expandedGroupId === g.id ? null : g.id
           renderCirclesView()
         })
 
+        // Touch: drag + long-press (context menu)
+        el.addEventListener('touchstart', e => {
+          if (e.touches.length !== 1 || e.target.closest('.c-subgroup')) return
+          const t0 = e.touches[0]
+          const startX = t0.clientX, startY = t0.clientY
+          const origCx = g.cx, origCy = g.cy
+          let moved = false
+          const pressTimer = setTimeout(() => openGroupCtx(g.id, null, null), 650)
+          function onTm(te) {
+            const t = te.touches[0]
+            const dx = (t.clientX - startX) / CCtf.sc, dy = (t.clientY - startY) / CCtf.sc
+            if (Math.abs(dx) > 6 || Math.abs(dy) > 6) { moved = true; clearTimeout(pressTimer) }
+            if (!moved) return
+            g.cx = origCx + dx; g.cy = origCy + dy
+            const ngx = cx + g.cx, ngy = cy + g.cy
+            el.style.left = ngx + 'px'; el.style.top = ngy + 'px'
+            const ln = cSvgG.querySelector(`[data-lgid="${g.id}"]`)
+            if (ln) { ln.setAttribute('x2', ngx); ln.setAttribute('y2', ngy) }
+          }
+          function onTu() {
+            clearTimeout(pressTimer)
+            el.removeEventListener('touchmove', onTm)
+            el.removeEventListener('touchend', onTu)
+            if (moved) { save(); renderCirclesView() }
+          }
+          el.addEventListener('touchmove', onTm, { passive: true })
+          el.addEventListener('touchend', onTu)
+        }, { passive: true })
+
         cWorld.appendChild(el)
 
-        // ── Sub-group bubbles (only if this group is expanded) ──
         if (expandedGroupId === g.id) {
           const subs = g.subgroups || []
           const SR = 120   // sub-group orbit radius from group centre
@@ -3584,6 +3773,7 @@ const groupCtxMenu = $('groupCtxMenu')
     }, { passive: false })
     $('czi').addEventListener('click', () => czBy(1.2))
     $('czo').addEventListener('click', () => czBy(.83))
+    $('crv').addEventListener('click', () => { CCtf = { x: 0, y: 0, sc: 1 }; applyCTf() })
     function czBy(f) {
       const r = cvs2.getBoundingClientRect(), cx = r.width / 2, cy = r.height / 2
       CCtf.x = cx + (CCtf.x - cx) * f; CCtf.y = cy + (CCtf.y - cy) * f
@@ -4063,7 +4253,7 @@ const groupCtxMenu = $('groupCtxMenu')
             () => {
               S.nodes = d.nodes; S.rootId = d.rootNodeId
               S.circles = d.circles || {}; S.settings = d.settings || { exportPrivateNotes: false }
-              S.selId = null; closePanel(); save(); render()
+              S.selId = null; closePanel(); save(); layoutTree(); render()
               if (S.mode === 'circles') renderCirclesView()
               centre(); toast(`Imported ${count} people${hasCircles ? ' + circles' : ''}!`)
             }
@@ -4089,12 +4279,40 @@ const groupCtxMenu = $('groupCtxMenu')
     function init() {
       const ok = load()
       if (!ok || !Object.keys(S.nodes).length) initRoot()
-      centre(); render(); initWelcome()
+      layoutTree(); centre(); render(); initWelcome()
     }
     init()
 
     // PWA
     if ('serviceWorker' in navigator) { window.addEventListener('load', () => { navigator.serviceWorker.register('circles-sw.js').catch(() => { }) }) }
+
+    // ════════════════════════════════════════════════════════
+    //  THEME TOGGLE (dark / light)
+    // ════════════════════════════════════════════════════════
+    function applyTheme(theme) {
+      document.documentElement.dataset.theme = theme
+      const isDark = theme === 'dark'
+      const icon = isDark ? '🌙' : '☀️'
+      const btn = $('thmBtn'); if (btn) btn.textContent = icon
+      const mbtn2 = $('mthmBtn'); if (mbtn2) mbtn2.querySelector('.mdi-icon').textContent = icon
+      // Update theme-color meta
+      const meta = document.querySelector('meta[name="theme-color"]')
+      if (meta) meta.content = isDark ? '#0d0c08' : '#f4efe2'
+    }
+    function toggleTheme() {
+      const current = document.documentElement.dataset.theme || 'dark'
+      const next = current === 'dark' ? 'light' : 'dark'
+      localStorage.setItem('circles_theme', next)
+      applyTheme(next)
+    }
+    ; (function initTheme() {
+      const saved = localStorage.getItem('circles_theme') || 'dark'
+      applyTheme(saved)
+    })()
+    $('thmBtn').addEventListener('click', toggleTheme)
+    $('mthmBtn').addEventListener('click', () => {
+      mdd.classList.remove('open'); mbtn.classList.remove('open'); toggleTheme()
+    })
 
   </script>
 </body>
